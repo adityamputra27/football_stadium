@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:football_stadium/presentation/screens/home_screen.dart';
+import 'package:football_stadium/presentation/screens/setting_screen.dart';
+import 'package:football_stadium/presentation/screens/stadium_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
 
 class MainScreen extends StatefulWidget {
@@ -9,13 +12,18 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+    List screens = [HomeScreen(), StadiumScreen(), SettingScreen()];
+
     Widget buildHeaderNavigation() {
       return SafeArea(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,7 +64,7 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
               Container(
-                margin: const EdgeInsets.only(top: 16),
+                margin: const EdgeInsets.only(top: 24),
                 width: double.infinity,
                 height: 1,
                 decoration: BoxDecoration(color: borderColor),
@@ -65,10 +73,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       );
-    }
-
-    Widget buildActiveMenu(int index) {
-      return SizedBox();
     }
 
     Widget buildBottomNavigation() {
@@ -88,9 +92,13 @@ class _MainScreenState extends State<MainScreen> {
             topRight: Radius.circular(30),
           ),
           child: BottomNavigationBar(
+            currentIndex: selectedIndex,
             onTap: (index) {
-              buildActiveMenu(index);
+              setState(() {
+                selectedIndex = index;
+              });
             },
+            elevation: 0,
             selectedLabelStyle: semiBoldTextStyle,
             unselectedLabelStyle: mediumTextStyle,
             unselectedIconTheme: IconThemeData(color: grayColor),
@@ -128,7 +136,12 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Stack(children: [buildHeaderNavigation(), buildActiveMenu(0)]),
+      body: Column(
+        children: [
+          buildHeaderNavigation(),
+          Expanded(child: screens[selectedIndex]),
+        ],
+      ),
       bottomNavigationBar: buildBottomNavigation(),
     );
   }
