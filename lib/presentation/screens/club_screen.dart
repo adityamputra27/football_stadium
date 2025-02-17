@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/main_screen.dart';
+import 'package:football_stadium/presentation/screens/league_screen.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
@@ -100,7 +101,11 @@ class _ClubScreenState extends State<ClubScreen> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    print(index);
+                    print('test');
+                    Get.to(
+                      () => StadiumScreen(),
+                      transition: Transition.rightToLeft,
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(

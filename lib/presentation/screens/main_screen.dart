@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/home_screen.dart';
 import 'package:football_stadium/presentation/screens/setting_screen.dart';
-import 'package:football_stadium/presentation/screens/stadium_screen.dart';
+import 'package:football_stadium/presentation/screens/league_screen.dart';
 import 'package:football_stadium/presentation/widgets/navigation/bottom_navigation.dart';
 import 'package:football_stadium/presentation/widgets/navigation/header_navigation.dart';
 import 'package:football_stadium/utils/theme.dart';
@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List screens = [HomeScreen(), StadiumScreen(), SettingScreen()];
+    List screens = [HomeScreen(), LeagueScreen(), SettingScreen()];
 
     return Scaffold(
       backgroundColor: backgroundColor,
