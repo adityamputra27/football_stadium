@@ -20,6 +20,18 @@ class _StadiumScreenState extends State<StadiumScreen> {
       "assets/images/logo/leagues/laliga.png",
       "assets/images/logo/leagues/serie_a.png",
       "assets/images/logo/leagues/briliga1.png",
+      "assets/images/logo/leagues/epl.png",
+      "assets/images/logo/leagues/laliga.png",
+      "assets/images/logo/leagues/serie_a.png",
+      "assets/images/logo/leagues/briliga1.png",
+      "assets/images/logo/leagues/epl.png",
+      "assets/images/logo/leagues/laliga.png",
+      "assets/images/logo/leagues/serie_a.png",
+      "assets/images/logo/leagues/briliga1.png",
+      "assets/images/logo/leagues/epl.png",
+      "assets/images/logo/leagues/laliga.png",
+      "assets/images/logo/leagues/serie_a.png",
+      "assets/images/logo/leagues/briliga1.png",
     ];
 
     Widget buildListLeagues() {
@@ -96,12 +108,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
             padding: const EdgeInsets.only(left: 15, right: 15, top: 26),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildTitle(),
-                buildListLeagues(),
-                buildListLeagues(),
-                buildListLeagues(),
-              ],
+              children: [buildTitle(), buildListLeagues()],
             ),
           ),
         ],
