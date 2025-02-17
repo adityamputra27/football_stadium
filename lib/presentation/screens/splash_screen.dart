@@ -23,7 +23,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void finishLoading() {
     Future.delayed(Duration(seconds: 5), () {
-      Get.to(() => const MainScreen(), transition: Transition.rightToLeft);
+      Get.to(
+        () => const MainScreen(activeIndex: 0),
+        transition: Transition.rightToLeft,
+      );
     });
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:football_stadium/presentation/screens/club_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
+import 'package:get/get.dart';
 
 class StadiumScreen extends StatefulWidget {
   const StadiumScreen({super.key});
@@ -39,6 +41,8 @@ class _StadiumScreenState extends State<StadiumScreen> {
               setState(() {
                 selectedLeague = index;
               });
+
+              Get.to(() => ClubScreen(), transition: Transition.rightToLeft);
             },
             child: Container(
               decoration: BoxDecoration(
