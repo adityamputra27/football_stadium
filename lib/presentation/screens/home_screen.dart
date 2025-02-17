@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Widget buildCarousel() {
       return ListView(
-        padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+        padding: const EdgeInsets.only(left: 15, right: 15, top: 6),
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         children: [
