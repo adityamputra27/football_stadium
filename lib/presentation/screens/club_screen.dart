@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/main_screen.dart';
-import 'package:football_stadium/presentation/screens/league_screen.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
 
 class ClubScreen extends StatefulWidget {
   const ClubScreen({super.key});
