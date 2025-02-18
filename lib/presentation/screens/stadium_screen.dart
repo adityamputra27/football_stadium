@@ -1,9 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:football_stadium/presentation/screens/club_screen.dart';
-import 'package:football_stadium/presentation/screens/main_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
-import 'package:get/get.dart';
 
 class StadiumScreen extends StatefulWidget {
   const StadiumScreen({super.key});
@@ -14,6 +11,7 @@ class StadiumScreen extends StatefulWidget {
 
 class _StadiumScreenState extends State<StadiumScreen> {
   late CarouselSliderController innerCarouselController;
+  int innerSliderIndex = 0;
 
   @override
   void initState() {
@@ -43,15 +41,25 @@ class _StadiumScreenState extends State<StadiumScreen> {
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         onPressed: () {
-          Get.to(() => ClubScreen(), transition: Transition.leftToRight);
+          Navigator.pop(context);
         },
         child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
       );
     }
 
     Widget buildCarousel() {
+      List<dynamic> carouselData = ["assets/images/stadiums/allianz_arena.png"];
+      List<bool> isRenovations = [false];
+      List clubs = [
+        [
+          "Bayern Munchen",
+          "assets/images/logo/teams/bayern_munich.png",
+          "Allianz Arena",
+        ],
+      ];
+
       return ListView(
-        padding: const EdgeInsets.only(left: 15, right: 15, top: 24),
+        padding: const EdgeInsets.only(left: 15, right: 15),
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         children: [
@@ -62,10 +70,16 @@ class _StadiumScreenState extends State<StadiumScreen> {
               alignment: Alignment.center,
               children: [
                 Positioned.fill(
-                  child: CarouselSlider(
+                  child: CarouselSlider.builder(
+                    itemCount: carouselData.length,
                     carouselController: innerCarouselController,
-                    items: [
-                      SizedBox(
+                    itemBuilder: (
+                      BuildContext context,
+                      int index,
+                      int realIndex,
+                    ) {
+                      final data = carouselData[index];
+                      return SizedBox(
                         child: Stack(
                           children: [
                             Stack(
@@ -77,9 +91,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                                     ),
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage(
-                                        "assets/images/stadiums/allianz_arena.png",
-                                      ),
+                                      image: AssetImage(data),
                                     ),
                                   ),
                                 ),
@@ -111,27 +123,29 @@ class _StadiumScreenState extends State<StadiumScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8),
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.only(
-                                      top: 4,
-                                      bottom: 6,
-                                      right: 8,
-                                      left: 8,
-                                    ),
-                                    child: Text(
-                                      'Renovation'.toUpperCase(),
-                                      style: boldTextStyle.copyWith(
-                                        color: whiteColor,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ),
+                                  isRenovations[index]
+                                      ? Container(
+                                        decoration: BoxDecoration(
+                                          color: primaryColor,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(8),
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.only(
+                                          top: 4,
+                                          bottom: 6,
+                                          right: 8,
+                                          left: 8,
+                                        ),
+                                        child: Text(
+                                          'Renovation'.toUpperCase(),
+                                          style: boldTextStyle.copyWith(
+                                            color: whiteColor,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      )
+                                      : const SizedBox(),
                                 ],
                               ),
                             ),
@@ -143,7 +157,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                                   Container(
                                     margin: const EdgeInsets.only(bottom: 2),
                                     child: Image.asset(
-                                      'assets/images/logo/teams/bayern_munich.png',
+                                      clubs[index][1],
                                       width: 25,
                                     ),
                                   ),
@@ -154,14 +168,14 @@ class _StadiumScreenState extends State<StadiumScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Home of Bayern Munchen',
+                                        clubs[index][0],
                                         style: semiBoldTextStyle.copyWith(
                                           color: whiteColor,
                                           fontSize: 14,
                                         ),
                                       ),
                                       Text(
-                                        'Allianz Arena',
+                                        clubs[index][2],
                                         style: mediumTextStyle.copyWith(
                                           color: whiteColor,
                                           fontSize: 10,
@@ -174,16 +188,21 @@ class _StadiumScreenState extends State<StadiumScreen> {
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      );
+                    },
                     options: CarouselOptions(
                       height: 250,
                       enlargeCenterPage: true,
                       autoPlay: true,
                       aspectRatio: 16 / 9,
-                      autoPlayCurve: Curves.fastOutSlowIn,
+                      autoPlayCurve: Curves.ease,
                       enableInfiniteScroll: true,
                       viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          innerSliderIndex = index;
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -191,47 +210,25 @@ class _StadiumScreenState extends State<StadiumScreen> {
                   bottom: MediaQuery.of(context).size.height * .025,
                   right: MediaQuery.of(context).size.height * .015,
                   child: Row(
-                    children: [
-                      GestureDetector(
+                    children: List.generate(carouselData.length, (index) {
+                      bool isSelected = innerSliderIndex == index;
+                      return GestureDetector(
                         onTap: () {},
                         child: AnimatedContainer(
                           width: 10,
                           height: 10,
                           margin: EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(
-                            color: dotIndicatorActiveColor,
+                            color:
+                                isSelected
+                                    ? dotIndicatorActiveColor
+                                    : dotIndicatorDefaultColor,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           duration: const Duration(milliseconds: 300),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: AnimatedContainer(
-                          width: 10,
-                          height: 10,
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                            color: dotIndicatorDefaultColor,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          duration: const Duration(milliseconds: 300),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: AnimatedContainer(
-                          width: 10,
-                          height: 10,
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                            color: dotIndicatorDefaultColor,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          duration: const Duration(milliseconds: 300),
-                        ),
-                      ),
-                    ],
+                      );
+                    }),
                   ),
                 ),
               ],
@@ -325,21 +322,20 @@ class _StadiumScreenState extends State<StadiumScreen> {
       );
     }
 
+    Widget buildHeader() {
+      return Container(
+        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 24),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [buildButton(), buildTitle()],
+        ),
+      );
+    }
+
     Widget buildContent() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.only(left: 15, right: 15),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [buildButton(), buildTitle()],
-            ),
-          ),
-          buildCarousel(),
-          buildInformation(),
-          buildHistory(),
-        ],
+        children: [buildCarousel(), buildInformation(), buildHistory()],
       );
     }
 
@@ -348,6 +344,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            buildHeader(),
             Expanded(child: SingleChildScrollView(child: buildContent())),
           ],
         ),

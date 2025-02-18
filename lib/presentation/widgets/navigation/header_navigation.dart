@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:football_stadium/presentation/screens/notification_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
+import 'package:get/route_manager.dart';
 
 class HeaderNavigation extends StatefulWidget {
   const HeaderNavigation({super.key});
@@ -43,7 +45,10 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        print('NOTIFICATION CLICKED!');
+                        Get.to(
+                          () => NotificationScreen(),
+                          transition: Transition.rightToLeft,
+                        );
                       },
                       icon: Icon(
                         Icons.notifications,

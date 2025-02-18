@@ -13,7 +13,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Testing Setting',
+        'Coming Soon',
         style: boldTextStyle.copyWith(color: whiteColor),
       ),
     );

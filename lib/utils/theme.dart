@@ -11,6 +11,7 @@ const Color borderColor = Color(0xff3C3C3C);
 const Color dotIndicatorDefaultColor = Color(0xff929292);
 const Color dotIndicatorActiveColor = Color(0xff454545);
 const Color initialGradientColor = Color(0xff232425);
+const Color subtitleColor = Color.fromARGB(255, 205, 205, 205);
 
 const thinTextStyle = TextStyle(
   fontFamily: fontFamily,

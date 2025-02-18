@@ -1,6 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/presentation/screens/club_screen.dart';
+import 'package:football_stadium/presentation/screens/league_screen.dart';
+import 'package:football_stadium/presentation/screens/stadium_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
+import 'package:get/route_manager.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late CarouselSliderController innerCarouselController;
+  int innerSliderIndex = 0;
   int selectedLeague = 0;
 
   @override
@@ -22,6 +27,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Widget buildCarousel() {
+      List<dynamic> carouselData = [
+        "assets/images/stadiums/signal_iduna_park.jpg",
+        "assets/images/stadiums/allianz_arena.png",
+      ];
+
+      List<String> capacities = ["70.000", "85.000"];
+      List<bool> isRenovations = [false, true];
+      List clubs = [
+        [
+          "Borussia Dortmund",
+          "assets/images/logo/teams/borussia_dortmund.png",
+          "Signal Iduna Park",
+        ],
+        [
+          "Bayern Munchen",
+          "assets/images/logo/teams/bayern_munich.png",
+          "Allianz Arena",
+        ],
+      ];
+
       return ListView(
         padding: const EdgeInsets.only(left: 15, right: 15, top: 6),
         shrinkWrap: true,
@@ -34,10 +59,16 @@ class _HomeScreenState extends State<HomeScreen> {
               alignment: Alignment.center,
               children: [
                 Positioned.fill(
-                  child: CarouselSlider(
+                  child: CarouselSlider.builder(
+                    itemCount: carouselData.length,
                     carouselController: innerCarouselController,
-                    items: [
-                      SizedBox(
+                    itemBuilder: (
+                      BuildContext context,
+                      int index,
+                      int realIndex,
+                    ) {
+                      final data = carouselData[index];
+                      return SizedBox(
                         child: Stack(
                           children: [
                             Stack(
@@ -49,9 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage(
-                                        "assets/images/stadiums/signal_iduna_park.jpg",
-                                      ),
+                                      image: AssetImage(data),
                                     ),
                                   ),
                                 ),
@@ -85,33 +114,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Capacity : 85.000',
+                                    "Capacity : ${capacities[index]}",
                                     style: mediumTextStyle.copyWith(
                                       fontSize: 12,
                                       color: whiteColor,
                                     ),
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8),
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.only(
-                                      top: 4,
-                                      bottom: 6,
-                                      right: 8,
-                                      left: 8,
-                                    ),
-                                    child: Text(
-                                      'Renovation'.toUpperCase(),
-                                      style: boldTextStyle.copyWith(
-                                        color: whiteColor,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ),
+                                  isRenovations[index]
+                                      ? Container(
+                                        decoration: BoxDecoration(
+                                          color: primaryColor,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(8),
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.only(
+                                          top: 4,
+                                          bottom: 6,
+                                          right: 8,
+                                          left: 8,
+                                        ),
+                                        child: Text(
+                                          'Renovation'.toUpperCase(),
+                                          style: boldTextStyle.copyWith(
+                                            color: whiteColor,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      )
+                                      : const SizedBox(),
                                 ],
                               ),
                             ),
@@ -123,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Container(
                                     margin: const EdgeInsets.only(bottom: 2),
                                     child: Image.asset(
-                                      'assets/images/logo/teams/borussia_dortmund.png',
+                                      clubs[index][1],
                                       width: 25,
                                     ),
                                   ),
@@ -134,14 +165,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Borussia Dortmund',
+                                        clubs[index][0],
                                         style: semiBoldTextStyle.copyWith(
                                           color: whiteColor,
                                           fontSize: 14,
                                         ),
                                       ),
                                       Text(
-                                        'Signal Iduna Park',
+                                        clubs[index][2],
                                         style: mediumTextStyle.copyWith(
                                           color: whiteColor,
                                           fontSize: 10,
@@ -154,126 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                      ),
-                      SizedBox(
-                        child: Stack(
-                          children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(16),
-                                    ),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(
-                                        "assets/images/stadiums/allianz_arena.png",
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(16),
-                                    ),
-                                    gradient: LinearGradient(
-                                      begin: FractionalOffset.topCenter,
-                                      end: FractionalOffset.bottomCenter,
-                                      colors: [
-                                        Colors.transparent,
-                                        initialGradientColor,
-                                      ],
-                                      stops: [0.0, 0.9],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(
-                                left: 16,
-                                right: 12,
-                                top: 10,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Capacity : 70.000',
-                                    style: mediumTextStyle.copyWith(
-                                      fontSize: 12,
-                                      color: whiteColor,
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8),
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.only(
-                                      top: 4,
-                                      bottom: 6,
-                                      right: 8,
-                                      left: 8,
-                                    ),
-                                    child: Text(
-                                      'Renovation'.toUpperCase(),
-                                      style: boldTextStyle.copyWith(
-                                        color: whiteColor,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 2),
-                                    child: Image.asset(
-                                      'assets/images/logo/teams/bayern_munich.png',
-                                      width: 25,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Bayern Munchen',
-                                        style: semiBoldTextStyle.copyWith(
-                                          color: whiteColor,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Allianz Arena',
-                                        style: mediumTextStyle.copyWith(
-                                          color: whiteColor,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      );
+                    },
                     options: CarouselOptions(
                       height: 180,
                       enlargeCenterPage: true,
@@ -282,6 +195,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       autoPlayCurve: Curves.ease,
                       enableInfiniteScroll: true,
                       viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          innerSliderIndex = index;
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -289,47 +207,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   bottom: MediaQuery.of(context).size.height * .05,
                   right: MediaQuery.of(context).size.height * .015,
                   child: Row(
-                    children: [
-                      GestureDetector(
+                    children: List.generate(carouselData.length, (index) {
+                      bool isSelected = innerSliderIndex == index;
+                      return GestureDetector(
                         onTap: () {},
                         child: AnimatedContainer(
                           width: 10,
                           height: 10,
                           margin: EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(
-                            color: dotIndicatorActiveColor,
+                            color:
+                                isSelected
+                                    ? dotIndicatorActiveColor
+                                    : dotIndicatorDefaultColor,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           duration: const Duration(milliseconds: 300),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: AnimatedContainer(
-                          width: 10,
-                          height: 10,
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                            color: dotIndicatorDefaultColor,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          duration: const Duration(milliseconds: 300),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: AnimatedContainer(
-                          width: 10,
-                          height: 10,
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                            color: dotIndicatorDefaultColor,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          duration: const Duration(milliseconds: 300),
-                        ),
-                      ),
-                    ],
+                      );
+                    }),
                   ),
                 ),
               ],
@@ -374,6 +270,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       selectedLeague = index;
                     });
+
+                    Get.to(
+                      () => ClubScreen(),
+                      transition: Transition.rightToLeft,
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -423,24 +324,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            Container(
-              padding: const EdgeInsets.only(top: 10),
-              child: Center(
-                child: TextButton(
-                  onPressed: () {
-                    print('see all');
-                  },
-                  child: Text(
-                    'See All',
-                    style: mediumTextStyle.copyWith(
-                      fontSize: 12,
-                      color: whiteColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       );
@@ -488,7 +371,10 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    print(index);
+                    Get.to(
+                      () => const StadiumScreen(),
+                      transition: Transition.rightToLeft,
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(

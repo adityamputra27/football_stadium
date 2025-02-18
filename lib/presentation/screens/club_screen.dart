@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:football_stadium/presentation/screens/main_screen.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
@@ -39,10 +38,7 @@ class _ClubScreenState extends State<ClubScreen> {
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         onPressed: () {
-          Get.to(
-            () => MainScreen(activeIndex: 1),
-            transition: Transition.leftToRight,
-          );
+          Navigator.pop(context);
         },
         child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
       );
