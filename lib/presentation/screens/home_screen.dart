@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/club_screen.dart';
-import 'package:football_stadium/presentation/screens/league_screen.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/route_manager.dart';
