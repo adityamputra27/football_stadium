@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/firebase_options.dart';
 import 'package:football_stadium/presentation/screens/splash_screen.dart';
+import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
 
 @pragma('vm:entry-point')
@@ -29,6 +30,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      theme: ThemeData(
+        primaryColor: backgroundColor,
+        scaffoldBackgroundColor: backgroundColor,
+      ),
       debugShowCheckedModeBanner: false,
       title: 'Football Stadium in the World',
       home: SplashScreen(),

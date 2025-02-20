@@ -103,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 children: [
                   Text(
                     'v1.0.0',
-                    style: regularTextStyle.copyWith(color: whiteColor),
+                    style: mediumTextStyle.copyWith(color: whiteColor),
                   ),
                   const SizedBox(height: 16),
                 ],

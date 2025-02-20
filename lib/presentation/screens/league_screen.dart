@@ -87,8 +87,8 @@ class _LeagueScreenState extends State<LeagueScreen> {
               padding: EdgeInsets.all(8),
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 18,
+                  vertical: 14,
+                  horizontal: 20,
                 ),
                 width: 10,
                 child: Image.asset(leagueLogos[index]),

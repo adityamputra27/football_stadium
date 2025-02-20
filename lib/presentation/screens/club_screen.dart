@@ -92,7 +92,7 @@ class _ClubScreenState extends State<ClubScreen> {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 1,
-                mainAxisExtent: 85,
+                mainAxisExtent: 80,
               ),
               itemCount: stadiumLogos.length,
               itemBuilder: (context, index) {
@@ -108,13 +108,14 @@ class _ClubScreenState extends State<ClubScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
                       color: secondaryColor,
+                      border: Border(
+                        top: BorderSide(
+                          color: index == 0 ? primaryColor : thirdColor,
+                          width: 1.5,
+                        ),
+                      ),
                     ),
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      top: 16,
-                      bottom: 16,
-                    ),
+                    padding: const EdgeInsets.all(16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,7 +126,7 @@ class _ClubScreenState extends State<ClubScreen> {
                               padding: const EdgeInsets.only(right: 12),
                               child: Image.asset(
                                 stadiumLogos[index],
-                                width: 40,
+                                width: 30,
                               ),
                             ),
                             Column(
@@ -172,7 +173,7 @@ class _ClubScreenState extends State<ClubScreen> {
       double paddingTop = 0;
 
       if (Platform.isAndroid) {
-        paddingTop = 62;
+        paddingTop = 24;
       }
 
       return Column(

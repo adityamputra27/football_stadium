@@ -10,7 +10,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 void onDidReceiveBackgroundNotificationResponse(
   NotificationResponse notificationResponse,
 ) {
-  print(notificationResponse);
+  if (kDebugMode) {
+    print(notificationResponse);
+  }
 }
 
 class NotificationService {

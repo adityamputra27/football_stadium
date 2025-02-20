@@ -91,6 +91,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   },
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border(
+                        top: BorderSide(
+                          color: index == 0 ? primaryColor : thirdColor,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
                     child: ListTile(
                       leading: Icon(
                         Icons.info,
@@ -112,7 +121,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         child: Text(
                           notificationsData[index],
                           style: semiBoldTextStyle.copyWith(
-                            fontSize: 16,
+                            fontSize: 14,
                             color: index <= 3 ? subtitleColor : whiteColor,
                           ),
                         ),
@@ -120,7 +129,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       subtitle: Text(
                         descriptionsData[index],
                         style: mediumTextStyle.copyWith(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: subtitleColor,
                         ),
                       ),
@@ -138,7 +147,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       double paddingTop = 0;
 
       if (Platform.isAndroid) {
-        paddingTop = 62;
+        paddingTop = 24;
       }
 
       return Container(

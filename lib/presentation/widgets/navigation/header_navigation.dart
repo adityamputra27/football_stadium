@@ -18,7 +18,7 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
     double paddingTop = 0;
 
     if (Platform.isAndroid) {
-      paddingTop = 62;
+      paddingTop = 24;
     }
 
     return SafeArea(
@@ -60,7 +60,7 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
                       },
                       icon: Icon(
                         Icons.notifications,
-                        size: 28,
+                        size: 24,
                         color: whiteColor,
                       ),
                     ),
@@ -72,7 +72,7 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
               margin: const EdgeInsets.only(top: 24),
               width: double.infinity,
               height: 1,
-              decoration: BoxDecoration(color: borderColor),
+              decoration: BoxDecoration(color: thirdColor),
             ),
           ],
         ),

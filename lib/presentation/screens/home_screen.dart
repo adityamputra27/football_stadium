@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/club_screen.dart';
@@ -47,7 +49,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ];
 
       return ListView(
-        padding: const EdgeInsets.only(left: 15, right: 15, top: 6),
+        padding: EdgeInsets.only(
+          left: 15,
+          right: 15,
+          top: Platform.isIOS ? 6 : 10,
+        ),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         children: [
@@ -85,6 +91,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 Container(
                                   decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: primaryColor,
+                                        width: 1.5,
+                                      ),
+                                    ),
                                     color: Colors.white,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(16),
@@ -94,9 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       end: FractionalOffset.bottomCenter,
                                       colors: [
                                         Colors.transparent,
-                                        initialGradientColor,
+                                        backgroundColor,
                                       ],
-                                      stops: [0.0, 0.9],
+                                      stops: [0.0, 0.85],
                                     ),
                                   ),
                                 ),
@@ -203,7 +215,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Positioned(
-                  bottom: MediaQuery.of(context).size.height * .05,
+                  bottom:
+                      MediaQuery.of(context).size.height *
+                      (Platform.isIOS ? .045 : .05),
                   right: MediaQuery.of(context).size.height * .015,
                   child: Row(
                     children: List.generate(carouselData.length, (index) {
@@ -211,8 +225,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       return GestureDetector(
                         onTap: () {},
                         child: AnimatedContainer(
-                          width: 10,
-                          height: 10,
+                          width: 8,
+                          height: 8,
                           margin: EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(
                             color:
@@ -235,6 +249,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     Widget buildPopularLeague() {
+      double paddingTop = 8;
+      if (Platform.isIOS) {
+        paddingTop = 14;
+      }
+
       List<String> leagueLogos = [
         "assets/images/logo/leagues/epl.png",
         "assets/images/logo/leagues/laliga.png",
@@ -243,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ];
 
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+        padding: EdgeInsets.only(left: 15, right: 15, top: paddingTop),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -285,27 +304,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ? primaryColor
                                   : thirdColor,
                         ),
-                        bottom: BorderSide(
-                          width: 2,
-                          color:
-                              selectedLeague == index
-                                  ? primaryColor
-                                  : thirdColor,
-                        ),
-                        left: BorderSide(
-                          width: 2,
-                          color:
-                              selectedLeague == index
-                                  ? primaryColor
-                                  : thirdColor,
-                        ),
-                        right: BorderSide(
-                          width: 2,
-                          color:
-                              selectedLeague == index
-                                  ? primaryColor
-                                  : thirdColor,
-                        ),
                       ),
                       borderRadius: BorderRadius.circular(24),
                       color: secondaryColor,
@@ -313,8 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.all(8),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 18,
+                        vertical: 14,
+                        horizontal: 20,
                       ),
                       width: 10,
                       child: Image.asset(leagueLogos[index]),
@@ -364,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 1,
-                mainAxisExtent: 85,
+                mainAxisExtent: 80,
               ),
               itemCount: stadiumLogos.length,
               itemBuilder: (context, index) {
@@ -379,13 +377,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
                       color: secondaryColor,
+                      border: Border(
+                        top: BorderSide(
+                          color: index == 0 ? primaryColor : thirdColor,
+                          width: 1.5,
+                        ),
+                      ),
                     ),
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      top: 16,
-                      bottom: 16,
-                    ),
+                    padding: const EdgeInsets.all(16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -396,7 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.only(right: 12),
                               child: Image.asset(
                                 stadiumLogos[index],
-                                width: 40,
+                                width: 30,
                               ),
                             ),
                             Column(

@@ -26,6 +26,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(0),
       decoration: const BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -40,10 +41,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 0),
-          child: SizedBox(
-            height: 120,
+        child: Container(
+          height: 85,
+          decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: thirdColor, width: 2)),
+          ),
+          child: Theme(
+            data: ThemeData(splashColor: Colors.transparent),
             child: BottomNavigationBar(
               currentIndex: _currentIndex,
               onTap: (index) {
@@ -54,8 +58,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 widget.onItemTapped(index);
               },
               elevation: 0,
-              selectedLabelStyle: semiBoldTextStyle,
-              unselectedLabelStyle: mediumTextStyle,
+              selectedLabelStyle: semiBoldTextStyle.copyWith(fontSize: 10),
+              unselectedLabelStyle: mediumTextStyle.copyWith(fontSize: 10),
               unselectedIconTheme: IconThemeData(color: grayColor),
               type: BottomNavigationBarType.fixed,
               selectedItemColor: whiteColor,
@@ -65,21 +69,21 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 BottomNavigationBarItem(
                   icon: Container(
                     padding: EdgeInsets.only(bottom: 6),
-                    child: Icon(Icons.home_filled, size: 24),
+                    child: Icon(Icons.home_filled, size: 20),
                   ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
                   icon: Container(
                     padding: EdgeInsets.only(bottom: 6),
-                    child: Icon(Icons.stadium_rounded),
+                    child: Icon(Icons.stadium_rounded, size: 20),
                   ),
                   label: 'Stadium',
                 ),
                 BottomNavigationBarItem(
                   icon: Container(
                     padding: EdgeInsets.only(bottom: 6),
-                    child: Icon(Icons.settings),
+                    child: Icon(Icons.settings, size: 20),
                   ),
                   label: 'Setting',
                 ),

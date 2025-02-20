@@ -100,6 +100,12 @@ class _StadiumScreenState extends State<StadiumScreen> {
                                 ),
                                 Container(
                                   decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: primaryColor,
+                                        width: 1.5,
+                                      ),
+                                    ),
                                     color: Colors.white,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(16),
@@ -109,9 +115,9 @@ class _StadiumScreenState extends State<StadiumScreen> {
                                       end: FractionalOffset.bottomCenter,
                                       colors: [
                                         Colors.transparent,
-                                        initialGradientColor,
+                                        backgroundColor,
                                       ],
-                                      stops: [0.0, 0.9],
+                                      stops: [0.0, 0.85],
                                     ),
                                   ),
                                 ),
@@ -218,8 +224,8 @@ class _StadiumScreenState extends State<StadiumScreen> {
                       return GestureDetector(
                         onTap: () {},
                         child: AnimatedContainer(
-                          width: 10,
-                          height: 10,
+                          width: 8,
+                          height: 8,
                           margin: EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(
                             color:
@@ -328,7 +334,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
     Widget buildHeader() {
       double paddingTop = 0;
       if (Platform.isAndroid) {
-        paddingTop = 62;
+        paddingTop = 24;
       }
       return Container(
         padding: EdgeInsets.only(
