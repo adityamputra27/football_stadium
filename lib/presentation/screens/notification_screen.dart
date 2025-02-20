@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
+import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
 
@@ -39,7 +42,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       );
     }
 
-    Widget buildStadiums() {
+    Widget buildNotifications() {
       List<String> descriptionsData = [
         "English Premier League - Etihad Stadium has been added to our app, let's check it out!",
         "English Premier League - Anfield Stadium has been updated, let's check it out!",
@@ -74,7 +77,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               ),
             ),
             ListView.builder(
-              padding: const EdgeInsets.only(bottom: 32),
+              padding: const EdgeInsets.only(bottom: 16),
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemCount: notificationsData.length,
@@ -132,12 +135,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
 
     Widget buildHeader() {
+      double paddingTop = 0;
+
+      if (Platform.isAndroid) {
+        paddingTop = 62;
+      }
+
       return Container(
-        padding: const EdgeInsets.only(
+        padding: EdgeInsets.only(
           left: 15,
           right: 15,
           bottom: 24,
-          top: 62,
+          top: paddingTop,
         ),
         color: backgroundColor,
         child: Row(
@@ -148,16 +157,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
 
     Widget buildContent() {
-      return Column(children: [buildStadiums()]);
+      return Column(children: [buildNotifications()]);
     }
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Column(
-        children: [
-          buildHeader(),
-          Expanded(child: SingleChildScrollView(child: buildContent())),
-        ],
+      body: SafeArea(
+        child: ScrollConfiguration(
+          behavior: CustomScrollBehaviour(),
+          child: Column(
+            children: [
+              buildHeader(),
+              Expanded(child: SingleChildScrollView(child: buildContent())),
+            ],
+          ),
+        ),
       ),
     );
   }

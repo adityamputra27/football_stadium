@@ -93,10 +93,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           ),
                         ),
                       )
-                      : Container(
-                        padding: EdgeInsets.only(top: 56),
-                        child: SizedBox(),
-                      ),
+                      : SizedBox(),
                 ],
               ),
             ),

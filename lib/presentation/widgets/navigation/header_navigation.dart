@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/notification_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
@@ -13,9 +15,15 @@ class HeaderNavigation extends StatefulWidget {
 class _HeaderNavigationState extends State<HeaderNavigation> {
   @override
   Widget build(BuildContext context) {
+    double paddingTop = 0;
+
+    if (Platform.isAndroid) {
+      paddingTop = 62;
+    }
+
     return SafeArea(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 15),
+        margin: EdgeInsets.only(left: 15, right: 15, top: paddingTop),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

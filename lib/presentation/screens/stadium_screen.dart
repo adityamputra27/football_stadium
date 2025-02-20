@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 
 class StadiumScreen extends StatefulWidget {
@@ -59,7 +62,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
       ];
 
       return ListView(
-        padding: const EdgeInsets.only(left: 15, right: 15),
+        padding: const EdgeInsets.only(left: 15, right: 15, top: 0),
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         children: [
@@ -323,8 +326,18 @@ class _StadiumScreenState extends State<StadiumScreen> {
     }
 
     Widget buildHeader() {
+      double paddingTop = 0;
+      if (Platform.isAndroid) {
+        paddingTop = 62;
+      }
       return Container(
-        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 24),
+        padding: EdgeInsets.only(
+          left: 15,
+          right: 15,
+          bottom: 24,
+          top: paddingTop,
+        ),
+        color: backgroundColor,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [buildButton(), buildTitle()],
@@ -342,11 +355,14 @@ class _StadiumScreenState extends State<StadiumScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            buildHeader(),
-            Expanded(child: SingleChildScrollView(child: buildContent())),
-          ],
+        child: ScrollConfiguration(
+          behavior: CustomScrollBehaviour(),
+          child: Column(
+            children: [
+              buildHeader(),
+              Expanded(child: SingleChildScrollView(child: buildContent())),
+            ],
+          ),
         ),
       ),
     );

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "779527383473",
+    "project_id": "football-stadium-8db1a",
+    "storage_bucket": "football-stadium-8db1a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:779527383473:android:19c5452447f0dcd7eb7590",
+        "android_client_info": {
+          "package_name": "com.dittmptrr27.footballstadium"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlk1EXypwGPbl6-FbMJwIYKLpqH_h64_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
+import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
 
@@ -89,7 +92,7 @@ class _ClubScreenState extends State<ClubScreen> {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 1,
-                mainAxisExtent: 100,
+                mainAxisExtent: 85,
               ),
               itemCount: stadiumLogos.length,
               itemBuilder: (context, index) {
@@ -148,7 +151,7 @@ class _ClubScreenState extends State<ClubScreen> {
                           ],
                         ),
                         Text(
-                          "Capacity: ${stadiumCapacities[index]}",
+                          "Capacity: ${stadiumCapacities[index] ?? '-'}",
                           style: mediumTextStyle.copyWith(
                             color: whiteColor,
                             fontSize: 12,
@@ -166,10 +169,16 @@ class _ClubScreenState extends State<ClubScreen> {
     }
 
     Widget buildContent() {
+      double paddingTop = 0;
+
+      if (Platform.isAndroid) {
+        paddingTop = 62;
+      }
+
       return Column(
         children: [
           Container(
-            padding: const EdgeInsets.only(left: 15, right: 15),
+            padding: EdgeInsets.only(left: 15, right: 15, top: paddingTop),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [buildButton(), buildLogo(), buildTitle()],
@@ -183,10 +192,13 @@ class _ClubScreenState extends State<ClubScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(child: SingleChildScrollView(child: buildContent())),
-          ],
+        child: ScrollConfiguration(
+          behavior: CustomScrollBehaviour(),
+          child: Column(
+            children: [
+              Expanded(child: SingleChildScrollView(child: buildContent())),
+            ],
+          ),
         ),
       ),
     );

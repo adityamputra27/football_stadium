@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return ListView(
         padding: const EdgeInsets.only(left: 15, right: 15, top: 6),
         shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height * .25,
@@ -347,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ];
 
       return Container(
-        padding: const EdgeInsets.only(top: 16, left: 15, right: 15),
+        padding: const EdgeInsets.only(top: 32, left: 15, right: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -364,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 1,
-                mainAxisExtent: 100,
+                mainAxisExtent: 85,
               ),
               itemCount: stadiumLogos.length,
               itemBuilder: (context, index) {

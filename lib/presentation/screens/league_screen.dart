@@ -32,11 +32,16 @@ class _LeagueScreenState extends State<LeagueScreen> {
       "assets/images/logo/leagues/laliga.png",
       "assets/images/logo/leagues/serie_a.png",
       "assets/images/logo/leagues/briliga1.png",
+      "assets/images/logo/leagues/briliga1.png",
+      "assets/images/logo/leagues/briliga1.png",
+      "assets/images/logo/leagues/briliga1.png",
+      "assets/images/logo/leagues/briliga1.png",
+      "assets/images/logo/leagues/briliga1.png",
     ];
 
     Widget buildListLeagues() {
       return GridView.builder(
-        padding: EdgeInsets.only(top: 24),
+        padding: EdgeInsets.only(top: 24, bottom: 32),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -105,7 +110,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
       return Column(
         children: [
           Container(
-            padding: const EdgeInsets.only(left: 15, right: 15, top: 26),
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [buildTitle(), buildListLeagues()],
