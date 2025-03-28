@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class StadiumScreen extends StatefulWidget {
   const StadiumScreen({super.key});
@@ -15,11 +17,43 @@ class StadiumScreen extends StatefulWidget {
 class _StadiumScreenState extends State<StadiumScreen> {
   late CarouselSliderController innerCarouselController;
   int innerSliderIndex = 0;
+  BannerAd? _bannerAd;
+
+  void _loadBannerAd() {
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          ad.dispose();
+        },
+      ),
+    ).load();
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    return MobileAds.instance.initialize();
+  }
 
   @override
   void initState() {
     super.initState();
     innerCarouselController = CarouselSliderController();
+
+    _initGoogleMobileAds();
+    _loadBannerAd();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bannerAd?.dispose();
   }
 
   @override
@@ -351,10 +385,29 @@ class _StadiumScreenState extends State<StadiumScreen> {
       );
     }
 
+    Widget buildBannerAds() {
+      return (_bannerAd != null)
+          ? Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 32, top: 0),
+              width: _bannerAd!.size.width.toDouble(),
+              height: _bannerAd!.size.height.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            ),
+          )
+          : Container();
+    }
+
     Widget buildContent() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [buildCarousel(), buildInformation(), buildHistory()],
+        children: [
+          buildCarousel(),
+          buildInformation(),
+          buildHistory(),
+          buildBannerAds(),
+        ],
       );
     }
 

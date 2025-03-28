@@ -4,8 +4,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/club_screen.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
+import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/route_manager.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,11 +20,43 @@ class _HomeScreenState extends State<HomeScreen> {
   late CarouselSliderController innerCarouselController;
   int innerSliderIndex = 0;
   int selectedLeague = 0;
+  BannerAd? _bannerAd;
+
+  void _loadBannerAd() {
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          ad.dispose();
+        },
+      ),
+    ).load();
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    return MobileAds.instance.initialize();
+  }
 
   @override
   void initState() {
     super.initState();
     innerCarouselController = CarouselSliderController();
+
+    _initGoogleMobileAds();
+    _loadBannerAd();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bannerAd?.dispose();
   }
 
   @override
@@ -438,6 +472,20 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    Widget buildBannerAds() {
+      return (_bannerAd != null)
+          ? Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10, top: 24),
+              width: _bannerAd!.size.width.toDouble(),
+              height: _bannerAd!.size.height.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            ),
+          )
+          : Container();
+    }
+
     return Column(
       children: [
         Expanded(
@@ -447,7 +495,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 buildCarousel(),
                 buildPopularLeague(),
                 buildPopularStadium(),
-                const SizedBox(height: 24),
+                buildBannerAds(),
+                const SizedBox(height: 16),
               ],
             ),
           ),

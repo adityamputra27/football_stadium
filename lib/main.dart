@@ -7,6 +7,7 @@ import 'package:football_stadium/firebase_options.dart';
 import 'package:football_stadium/presentation/screens/splash_screen.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -21,6 +22,8 @@ void main() async {
     );
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
+
+  MobileAds.instance.initialize();
   runApp(const MyApp());
 }
 

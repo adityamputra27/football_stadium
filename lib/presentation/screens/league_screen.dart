@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/club_screen.dart';
+import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class LeagueScreen extends StatefulWidget {
   const LeagueScreen({super.key});
@@ -12,6 +14,44 @@ class LeagueScreen extends StatefulWidget {
 
 class _LeagueScreenState extends State<LeagueScreen> {
   int selectedLeague = 0;
+  BannerAd? _bannerAd;
+
+  void _loadBannerAd() {
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          ad.dispose();
+        },
+      ),
+    ).load();
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    return MobileAds.instance.initialize();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initGoogleMobileAds();
+    _loadBannerAd();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _bannerAd?.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +81,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
 
     Widget buildListLeagues() {
       return GridView.builder(
-        padding: EdgeInsets.only(top: 24, bottom: 32),
+        padding: EdgeInsets.only(top: 24, bottom: 24),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -106,6 +146,20 @@ class _LeagueScreenState extends State<LeagueScreen> {
       );
     }
 
+    Widget buildBannerAds() {
+      return (_bannerAd != null)
+          ? Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 24),
+              width: _bannerAd!.size.width.toDouble(),
+              height: _bannerAd!.size.height.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            ),
+          )
+          : Container();
+    }
+
     Widget buildContent() {
       return Column(
         children: [
@@ -113,7 +167,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
             padding: const EdgeInsets.only(left: 15, right: 15, top: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [buildTitle(), buildListLeagues()],
+              children: [buildTitle(), buildListLeagues(), buildBannerAds()],
             ),
           ),
         ],

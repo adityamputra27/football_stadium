@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
+import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class ClubScreen extends StatefulWidget {
   const ClubScreen({super.key});
@@ -14,6 +16,71 @@ class ClubScreen extends StatefulWidget {
 }
 
 class _ClubScreenState extends State<ClubScreen> {
+  BannerAd? _bannerAd;
+  InterstitialAd? _interstitialAd;
+  bool isInterstitialAdLoaded = false;
+
+  void _loadBannerAd() {
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          ad.dispose();
+        },
+      ),
+    ).load();
+  }
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              Get.to(() => StadiumScreen(), transition: Transition.rightToLeft);
+            },
+          );
+
+          setState(() {
+            _interstitialAd = ad;
+          });
+        },
+        onAdFailedToLoad: (err) {
+          print('error interstitial ad');
+        },
+      ),
+    );
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    return MobileAds.instance.initialize();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initGoogleMobileAds();
+    _loadBannerAd();
+    _loadInterstitialAd();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _bannerAd?.dispose();
+    _interstitialAd?.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget buildTitle() {
@@ -98,11 +165,27 @@ class _ClubScreenState extends State<ClubScreen> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    print('test');
-                    Get.to(
-                      () => StadiumScreen(),
-                      transition: Transition.rightToLeft,
-                    );
+                    if (!isInterstitialAdLoaded) {
+                      if (_interstitialAd != null) {
+                        _interstitialAd?.show();
+                        setState(() {
+                          isInterstitialAdLoaded = true;
+                        });
+                      } else {
+                        Get.to(
+                          () => StadiumScreen(),
+                          transition: Transition.rightToLeft,
+                        );
+                        setState(() {
+                          isInterstitialAdLoaded = true;
+                        });
+                      }
+                    } else {
+                      Get.to(
+                        () => StadiumScreen(),
+                        transition: Transition.rightToLeft,
+                      );
+                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -152,7 +235,7 @@ class _ClubScreenState extends State<ClubScreen> {
                           ],
                         ),
                         Text(
-                          "Capacity: ${stadiumCapacities[index] ?? '-'}",
+                          "Capacity: ${stadiumCapacities[index]}",
                           style: mediumTextStyle.copyWith(
                             color: whiteColor,
                             fontSize: 12,
@@ -190,6 +273,20 @@ class _ClubScreenState extends State<ClubScreen> {
       );
     }
 
+    Widget buildBannerAds() {
+      return (_bannerAd != null)
+          ? Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10, top: 24),
+              width: _bannerAd!.size.width.toDouble(),
+              height: _bannerAd!.size.height.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            ),
+          )
+          : Container();
+    }
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -197,7 +294,11 @@ class _ClubScreenState extends State<ClubScreen> {
           behavior: CustomScrollBehaviour(),
           child: Column(
             children: [
-              Expanded(child: SingleChildScrollView(child: buildContent())),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(children: [buildContent(), buildBannerAds()]),
+                ),
+              ),
             ],
           ),
         ),
