@@ -5,6 +5,7 @@ import 'package:football_stadium/presentation/screens/stadium_screen.dart';
 import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -76,68 +77,90 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 style: mediumTextStyle.copyWith(color: whiteColor),
               ),
             ),
-            ListView.builder(
-              padding: const EdgeInsets.only(bottom: 16),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: notificationsData.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Get.to(
-                      () => const StadiumScreen(),
-                      transition: Transition.rightToLeft,
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
+
+            Shimmer.fromColors(
+              baseColor: secondaryColor,
+              highlightColor: thirdColor,
+              child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(bottom: 16),
+                itemCount: 7,
+                itemBuilder: (context, index) {
+                  return Container(
+                    height: 80,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      border: Border(
-                        top: BorderSide(
-                          color: index == 0 ? primaryColor : thirdColor,
-                          width: 1.5,
-                        ),
-                      ),
+                      color: whiteColor,
                     ),
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.info,
-                        color: index <= 3 ? subtitleColor : whiteColor,
-                        size: 24,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                      ),
-                      contentPadding: EdgeInsets.only(
-                        top: 4,
-                        bottom: 6,
-                        left: 16,
-                        right: 16,
-                      ),
-                      tileColor: secondaryColor,
-                      title: Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Text(
-                          notificationsData[index],
-                          style: semiBoldTextStyle.copyWith(
-                            fontSize: 14,
-                            color: index <= 3 ? subtitleColor : whiteColor,
-                          ),
-                        ),
-                      ),
-                      subtitle: Text(
-                        descriptionsData[index],
-                        style: mediumTextStyle.copyWith(
-                          fontSize: 12,
-                          color: subtitleColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
+                    margin: const EdgeInsets.only(bottom: 12),
+                  );
+                },
+              ),
             ),
+
+            // ListView.builder(
+            //   padding: const EdgeInsets.only(bottom: 16),
+            //   shrinkWrap: true,
+            //   physics: NeverScrollableScrollPhysics(),
+            //   itemCount: notificationsData.length,
+            //   itemBuilder: (context, index) {
+            //     return GestureDetector(
+            //       onTap: () {
+            //         Get.to(
+            //           () => const StadiumScreen(),
+            //           transition: Transition.rightToLeft,
+            //         );
+            //       },
+            //       child: Container(
+            //         margin: const EdgeInsets.only(bottom: 12),
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(16),
+            //           border: Border(
+            //             top: BorderSide(
+            //               color: index == 0 ? primaryColor : thirdColor,
+            //               width: 1.5,
+            //             ),
+            //           ),
+            //         ),
+            //         child: ListTile(
+            //           leading: Icon(
+            //             Icons.info,
+            //             color: index <= 3 ? subtitleColor : whiteColor,
+            //             size: 24,
+            //           ),
+            //           shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.all(Radius.circular(16)),
+            //           ),
+            //           contentPadding: EdgeInsets.only(
+            //             top: 4,
+            //             bottom: 6,
+            //             left: 16,
+            //             right: 16,
+            //           ),
+            //           tileColor: secondaryColor,
+            //           title: Padding(
+            //             padding: const EdgeInsets.only(bottom: 4),
+            //             child: Text(
+            //               notificationsData[index],
+            //               style: semiBoldTextStyle.copyWith(
+            //                 fontSize: 14,
+            //                 color: index <= 3 ? subtitleColor : whiteColor,
+            //               ),
+            //             ),
+            //           ),
+            //           subtitle: Text(
+            //             descriptionsData[index],
+            //             style: mediumTextStyle.copyWith(
+            //               fontSize: 12,
+            //               color: subtitleColor,
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // ),
           ],
         ),
       );

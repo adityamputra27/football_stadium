@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app_settings/app_settings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -54,8 +52,9 @@ class NotificationService {
 
   Future<void> showNotification(RemoteMessage message) async {
     AndroidNotificationChannel channel = AndroidNotificationChannel(
-      Random.secure().nextInt(100000).toString(),
-      'Important notification',
+      'high_importance_channel',
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications',
       importance: Importance.max,
     );
 

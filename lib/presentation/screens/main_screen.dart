@@ -28,14 +28,12 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     selectedIndex = widget.activeIndex;
 
-    if (Platform.isAndroid) {
-      notificationService.requestNotificationPermission();
-      notificationService.firebaseInit(context);
-      notificationService.isTokenRefresh();
-      notificationService.getDeviceToken().then((value) {
-        print(value);
-      });
-    }
+    notificationService.requestNotificationPermission();
+    notificationService.firebaseInit(context);
+    notificationService.isTokenRefresh();
+    notificationService.getDeviceToken().then((value) {
+      print(value);
+    });
   }
 
   void _onItemTapped(index) {

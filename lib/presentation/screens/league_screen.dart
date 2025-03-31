@@ -4,6 +4,7 @@ import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shimmer/shimmer.dart';
 
 class LeagueScreen extends StatefulWidget {
   const LeagueScreen({super.key});
@@ -40,7 +41,6 @@ class _LeagueScreenState extends State<LeagueScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _initGoogleMobileAds();
     _loadBannerAd();
@@ -48,7 +48,6 @@ class _LeagueScreenState extends State<LeagueScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _bannerAd?.dispose();
   }
@@ -80,6 +79,32 @@ class _LeagueScreenState extends State<LeagueScreen> {
     ];
 
     Widget buildListLeagues() {
+      // return Shimmer.fromColors(
+      //   baseColor: secondaryColor,
+      //   highlightColor: thirdColor,
+      //   child: GridView.builder(
+      //     shrinkWrap: true,
+      //     padding: EdgeInsets.only(top: 24, bottom: 24),
+      //     physics: NeverScrollableScrollPhysics(),
+      //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      //       crossAxisCount: 4,
+      //       crossAxisSpacing: 10,
+      //       mainAxisSpacing: 10,
+      //       childAspectRatio: 1,
+      //       mainAxisExtent: 100,
+      //     ),
+      //     itemCount: 20,
+      //     itemBuilder: (context, index) {
+      //       return Container(
+      //         decoration: BoxDecoration(
+      //           color: secondaryColor,
+      //           borderRadius: BorderRadius.all(Radius.circular(24)),
+      //         ),
+      //       );
+      //     },
+      //   ),
+      // );
+
       return GridView.builder(
         padding: EdgeInsets.only(top: 24, bottom: 24),
         shrinkWrap: true,

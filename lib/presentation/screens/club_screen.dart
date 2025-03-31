@@ -7,6 +7,7 @@ import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ClubScreen extends StatefulWidget {
   const ClubScreen({super.key});
@@ -149,6 +150,31 @@ class _ClubScreenState extends State<ClubScreen> {
               child: Text(
                 'Select club to see details',
                 style: mediumTextStyle.copyWith(color: whiteColor),
+              ),
+            ),
+            Shimmer.fromColors(
+              baseColor: secondaryColor,
+              highlightColor: thirdColor,
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1,
+                  mainAxisExtent: 80,
+                ),
+                itemCount: 7,
+                itemBuilder: (context, index) {
+                  return Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                    ),
+                  );
+                },
               ),
             ),
             GridView.builder(

@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/presentation/widgets/shimmers/paragraph_shimmer.dart';
 import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shimmer/shimmer.dart';
 
 class StadiumScreen extends StatefulWidget {
   const StadiumScreen({super.key});
@@ -411,6 +413,40 @@ class _StadiumScreenState extends State<StadiumScreen> {
       );
     }
 
+    Widget buildLoadingContent() {
+      final double fullSizeWidth = MediaQuery.of(context).size.width;
+      final double marginTop16 = 16;
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ParagraphShimmer(customWidth: fullSizeWidth, customHeight: 250),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return ParagraphShimmer(
+                customWidth: fullSizeWidth,
+                customHeight: 20,
+                customMarginTop: marginTop16,
+              );
+            },
+          ),
+          ParagraphShimmer(
+            customWidth: 300,
+            customHeight: 20,
+            customMarginTop: marginTop16,
+          ),
+          ParagraphShimmer(
+            customWidth: 300,
+            customHeight: 20,
+            customMarginTop: marginTop16,
+          ),
+        ],
+      );
+    }
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -419,7 +455,10 @@ class _StadiumScreenState extends State<StadiumScreen> {
           child: Column(
             children: [
               buildHeader(),
-              Expanded(child: SingleChildScrollView(child: buildContent())),
+              Expanded(
+                child: SingleChildScrollView(child: buildLoadingContent()),
+              ),
+              // Expanded(child: SingleChildScrollView(child: buildContent())),
             ],
           ),
         ),

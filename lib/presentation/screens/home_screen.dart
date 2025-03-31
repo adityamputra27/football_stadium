@@ -8,6 +8,7 @@ import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -81,6 +82,25 @@ class _HomeScreenState extends State<HomeScreen> {
           "Allianz Arena",
         ],
       ];
+
+      return Shimmer.fromColors(
+        baseColor: secondaryColor,
+        highlightColor: thirdColor,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 188,
+          margin: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 34,
+            bottom: 16,
+          ),
+          decoration: BoxDecoration(
+            color: secondaryColor,
+            borderRadius: BorderRadius.all(Radius.circular(24)),
+          ),
+        ),
+      );
 
       return ListView(
         padding: EdgeInsets.only(
@@ -304,6 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
               'Popular League',
               style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
             ),
+
             GridView.builder(
               padding: EdgeInsets.only(top: 24),
               shrinkWrap: true,
@@ -315,46 +336,72 @@ class _HomeScreenState extends State<HomeScreen> {
                 childAspectRatio: 1,
                 mainAxisExtent: 100,
               ),
-              itemCount: leagueLogos.length,
+              itemCount: 4,
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedLeague = index;
-                    });
-
-                    Get.to(
-                      () => ClubScreen(),
-                      transition: Transition.rightToLeft,
-                    );
-                  },
+                return Shimmer.fromColors(
+                  baseColor: secondaryColor,
+                  highlightColor: thirdColor,
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(
-                          width: 2,
-                          color:
-                              selectedLeague == index
-                                  ? primaryColor
-                                  : thirdColor,
-                        ),
-                      ),
-                      borderRadius: BorderRadius.circular(24),
                       color: secondaryColor,
-                    ),
-                    padding: EdgeInsets.all(8),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 14,
-                        horizontal: 20,
-                      ),
-                      width: 10,
-                      child: Image.asset(leagueLogos[index]),
+                      borderRadius: BorderRadius.all(Radius.circular(24)),
                     ),
                   ),
                 );
               },
             ),
+
+            // GridView.builder(
+            //   padding: EdgeInsets.only(top: 24),
+            //   shrinkWrap: true,
+            //   physics: NeverScrollableScrollPhysics(),
+            //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //     crossAxisCount: 4,
+            //     crossAxisSpacing: 10,
+            //     mainAxisSpacing: 10,
+            //     childAspectRatio: 1,
+            //     mainAxisExtent: 100,
+            //   ),
+            //   itemCount: leagueLogos.length,
+            //   itemBuilder: (context, index) {
+            //     return GestureDetector(
+            //       onTap: () {
+            //         setState(() {
+            //           selectedLeague = index;
+            //         });
+
+            //         Get.to(
+            //           () => ClubScreen(),
+            //           transition: Transition.rightToLeft,
+            //         );
+            //       },
+            //       child: Container(
+            //         decoration: BoxDecoration(
+            //           border: Border(
+            //             top: BorderSide(
+            //               width: 2,
+            //               color:
+            //                   selectedLeague == index
+            //                       ? primaryColor
+            //                       : thirdColor,
+            //             ),
+            //           ),
+            //           borderRadius: BorderRadius.circular(24),
+            //           color: secondaryColor,
+            //         ),
+            //         padding: EdgeInsets.all(8),
+            //         child: Container(
+            //           padding: const EdgeInsets.symmetric(
+            //             vertical: 14,
+            //             horizontal: 20,
+            //           ),
+            //           width: 10,
+            //           child: Image.asset(leagueLogos[index]),
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // ),
           ],
         ),
       );
@@ -387,6 +434,33 @@ class _HomeScreenState extends State<HomeScreen> {
               'Popular Stadium',
               style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
             ),
+            Shimmer.fromColors(
+              baseColor: secondaryColor,
+              highlightColor: thirdColor,
+              child: GridView.builder(
+                padding: EdgeInsets.only(top: 24),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1,
+                  mainAxisExtent: 80,
+                ),
+                itemCount: stadiumLogos.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                    ),
+                  );
+                },
+              ),
+            ),
+
             GridView.builder(
               padding: EdgeInsets.only(top: 24),
               shrinkWrap: true,
