@@ -1,16 +1,31 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:football_stadium/data/models/football_club_model.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
+import 'package:football_stadium/presentation/widgets/shimmers/card_row_shimmer.dart';
 import 'package:football_stadium/utils/ad_helper.dart';
+import 'package:football_stadium/utils/environment.dart';
 import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:http/http.dart' as http;
 
 class ClubScreen extends StatefulWidget {
-  const ClubScreen({super.key});
+  final int footballLeagueId;
+  final String footballLeagueLogo;
+  final String footballLeagueName;
+  final int footballClubTotal;
+
+  const ClubScreen({
+    super.key,
+    required this.footballLeagueId,
+    required this.footballLeagueLogo,
+    required this.footballLeagueName,
+    this.footballClubTotal = 0,
+  });
 
   @override
   State<ClubScreen> createState() => _ClubScreenState();
@@ -20,6 +35,32 @@ class _ClubScreenState extends State<ClubScreen> {
   BannerAd? _bannerAd;
   InterstitialAd? _interstitialAd;
   bool isInterstitialAdLoaded = false;
+  List<FootballClubModel> footballClubs = [];
+  bool isLoading = true;
+  FootballClubModel? selectedFootballClub;
+
+  Future<void> fetchFootballClubs() async {
+    final response = await http.get(
+      Uri.parse("${Environment.baseURL}/all-clubs/${widget.footballLeagueId}"),
+      headers: {'Football-Stadium-App': Environment.valueHeader},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body)['data']['data'];
+      setState(() {
+        footballClubs =
+            (jsonData as List)
+                .map((data) => FootballClubModel.fromJson(data))
+                .toList();
+
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = true;
+      });
+    }
+  }
 
   void _loadBannerAd() {
     BannerAd(
@@ -47,7 +88,16 @@ class _ClubScreenState extends State<ClubScreen> {
         onAdLoaded: (ad) {
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
-              Get.to(() => StadiumScreen(), transition: Transition.rightToLeft);
+              Get.to(
+                () => StadiumScreen(
+                  footballClubId: selectedFootballClub!.footballClubId,
+                  footballLeagueId: widget.footballLeagueId,
+                  footballClubLogo: selectedFootballClub!.logoWhite,
+                  footballClubName: selectedFootballClub!.clubName,
+                  footballStadiumName: selectedFootballClub!.stadiumName!,
+                ),
+                transition: Transition.rightToLeft,
+              );
             },
           );
 
@@ -72,11 +122,13 @@ class _ClubScreenState extends State<ClubScreen> {
     _initGoogleMobileAds();
     _loadBannerAd();
     _loadInterstitialAd();
+
+    // for fetching data API's
+    fetchFootballClubs();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _bannerAd?.dispose();
     _interstitialAd?.dispose();
@@ -89,12 +141,12 @@ class _ClubScreenState extends State<ClubScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'English Premier League',
+            widget.footballLeagueName,
             style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
           ),
           const SizedBox(height: 2),
           Text(
-            'Stadium Totals : 20',
+            'Stadium total : ${widget.footballClubTotal}',
             style: mediumTextStyle.copyWith(color: whiteColor, fontSize: 12),
           ),
         ],
@@ -118,28 +170,11 @@ class _ClubScreenState extends State<ClubScreen> {
     Widget buildLogo() {
       return Container(
         padding: const EdgeInsets.only(right: 12, left: 4),
-        child: Image.asset("assets/images/logo/leagues/epl.png", width: 25),
+        child: Image.network(widget.footballLeagueLogo, width: 25),
       );
     }
 
     Widget buildStadiums() {
-      List<String> stadiumLogos = [
-        "assets/images/logo/teams/manchester_united.png",
-        "assets/images/logo/teams/manchester_city.png",
-        "assets/images/logo/teams/chelsea.png",
-      ];
-      List<String> stadiumNames = [
-        "Old Trafford",
-        "Etihad Stadium",
-        "Stamford Bridge",
-      ];
-      List<String> stadiumCapacities = ["70.000", "74.310", "81.365"];
-      List<String> stadiumClubs = [
-        "Manchester United",
-        "Manchester City",
-        "Chelsea F.C",
-      ];
-
       return Container(
         padding: const EdgeInsets.only(top: 16, left: 15, right: 15),
         child: Column(
@@ -152,127 +187,122 @@ class _ClubScreenState extends State<ClubScreen> {
                 style: mediumTextStyle.copyWith(color: whiteColor),
               ),
             ),
-            Shimmer.fromColors(
-              baseColor: secondaryColor,
-              highlightColor: thirdColor,
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1,
-                  mainAxisExtent: 80,
-                ),
-                itemCount: 7,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: whiteColor,
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
-                    ),
-                  );
-                },
-              ),
-            ),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1,
-                mainAxisExtent: 80,
-              ),
-              itemCount: stadiumLogos.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    if (!isInterstitialAdLoaded) {
-                      if (_interstitialAd != null) {
-                        _interstitialAd?.show();
-                        setState(() {
-                          isInterstitialAdLoaded = true;
-                        });
-                      } else {
-                        Get.to(
-                          () => StadiumScreen(),
-                          transition: Transition.rightToLeft,
-                        );
-                        setState(() {
-                          isInterstitialAdLoaded = true;
-                        });
-                      }
-                    } else {
-                      Get.to(
-                        () => StadiumScreen(),
-                        transition: Transition.rightToLeft,
-                      );
-                    }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      color: secondaryColor,
-                      border: Border(
-                        top: BorderSide(
-                          color: index == 0 ? primaryColor : thirdColor,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.only(right: 12),
-                              child: Image.asset(
-                                stadiumLogos[index],
-                                width: 30,
+            isLoading
+                ? CardRowShimmer(itemCount: 7)
+                : GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 1,
+                    mainAxisExtent: 80,
+                  ),
+                  itemCount: footballClubs.length,
+                  itemBuilder: (context, index) {
+                    FootballClubModel footballClub = footballClubs[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        if (!isInterstitialAdLoaded) {
+                          if (_interstitialAd != null) {
+                            _interstitialAd?.show();
+                            setState(() {
+                              isInterstitialAdLoaded = true;
+                            });
+                          } else {
+                            Get.to(
+                              () => StadiumScreen(
+                                footballClubId: footballClub.footballClubId,
+                                footballLeagueId: widget.footballLeagueId,
+                                footballClubLogo: footballClub.logoWhite,
+                                footballClubName: footballClub.clubName,
+                                footballStadiumName: footballClub.stadiumName!,
                               ),
+                              transition: Transition.rightToLeft,
+                            );
+                            setState(() {
+                              isInterstitialAdLoaded = true;
+                            });
+                          }
+                        } else {
+                          Get.to(
+                            () => StadiumScreen(
+                              footballClubId: footballClub.footballClubId,
+                              footballLeagueId: widget.footballLeagueId,
+                              footballClubName: footballClub.clubName,
+                              footballClubLogo: footballClub.logoWhite,
+                              footballStadiumName: footballClub.stadiumName!,
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            transition: Transition.rightToLeft,
+                          );
+                        }
+
+                        setState(() {
+                          selectedFootballClub = footballClub;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: secondaryColor,
+                          border: Border(
+                            top: BorderSide(
+                              color: index == 0 ? primaryColor : thirdColor,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
                               children: [
-                                Text(
-                                  stadiumClubs[index],
-                                  style: semiBoldTextStyle.copyWith(
-                                    color: whiteColor,
-                                    fontSize: 16,
+                                Container(
+                                  padding: const EdgeInsets.only(right: 12),
+                                  child: Image.network(
+                                    footballClub.logoWhite,
+                                    width: 30,
                                   ),
                                 ),
-                                Text(
-                                  stadiumNames[index],
-                                  style: mediumTextStyle.copyWith(
-                                    color: whiteColor,
-                                    fontSize: 12,
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      footballClub.clubName,
+                                      style: semiBoldTextStyle.copyWith(
+                                        color: whiteColor,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text(
+                                      footballClub.stadiumName!,
+                                      style: mediumTextStyle.copyWith(
+                                        color: whiteColor,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
+                            Text(
+                              "Capacity: ${footballClub.capacity}",
+                              style: mediumTextStyle.copyWith(
+                                color: whiteColor,
+                                fontSize: 12,
+                              ),
+                            ),
                           ],
                         ),
-                        Text(
-                          "Capacity: ${stadiumCapacities[index]}",
-                          style: mediumTextStyle.copyWith(
-                            color: whiteColor,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      ),
+                    );
+                  },
+                ),
           ],
         ),
       );

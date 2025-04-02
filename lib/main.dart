@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
+        useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
       title: 'Football Stadium in the World',

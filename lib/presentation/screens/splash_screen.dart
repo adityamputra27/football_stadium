@@ -1,7 +1,17 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/data/services/notification_service.dart';
 import 'package:football_stadium/presentation/screens/main_screen.dart';
+import 'package:football_stadium/utils/environment.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/route_manager.dart';
+import 'package:http/http.dart' as http;
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,18 +21,56 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  var isLoading = false;
+  bool isLoading = true;
+  NotificationService notificationService = NotificationService();
 
-  void startLoading() {
-    Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        isLoading = true;
-      });
+  String? appVersion = '';
+  String? appBuildNumber = '';
+
+  Future<void> getPackageInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      appVersion = packageInfo.version;
+      appBuildNumber = packageInfo.buildNumber;
     });
   }
 
-  void finishLoading() {
-    Future.delayed(Duration(seconds: 5), () {
+  Future<void> registerDevice() async {
+    String deviceId = '-';
+    String firebaseCloudMessagingToken =
+        await notificationService.getDeviceToken();
+
+    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
+      deviceId = androidDeviceInfo.id;
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosDeviceInfo = await deviceInfoPlugin.iosInfo;
+      deviceId = iosDeviceInfo.localizedModel;
+    }
+
+    final response = await http.post(
+      Uri.parse("${Environment.baseURL}/register-device"),
+      headers: <String, String>{
+        'Football-Stadium-App': Environment.valueHeader,
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'device_id': deviceId,
+        'fcm_token': firebaseCloudMessagingToken,
+      }),
+    );
+
+    final prefs = await SharedPreferences.getInstance();
+
+    var responseData = jsonDecode(response.body);
+    if (responseData['data']['status'] == true) {
+      prefs.setInt('user_id', responseData['data']['data']['id']);
+    } else {
+      prefs.setInt('user_id', 0);
+    }
+
+    Timer(const Duration(seconds: 3), () {
       Get.to(
         () => const MainScreen(activeIndex: 0),
         transition: Transition.rightToLeft,
@@ -33,8 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    startLoading();
-    finishLoading();
+    registerDevice();
   }
 
   @override
@@ -102,7 +149,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    'v1.0.0',
+                    // 'v${appVersion.toString()} (${appBuildNumber.toString()})',
+                    'v1.0.0 (01)',
                     style: mediumTextStyle.copyWith(color: whiteColor),
                   ),
                   const SizedBox(height: 16),
