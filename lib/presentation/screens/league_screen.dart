@@ -147,7 +147,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
                     borderRadius: BorderRadius.circular(24),
                     color: secondaryColor,
                   ),
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(6),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 14,
