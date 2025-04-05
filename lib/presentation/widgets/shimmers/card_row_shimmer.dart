@@ -9,8 +9,8 @@ class CardRowShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: secondaryColor,
-      highlightColor: thirdColor,
+      baseColor: adjustColor(secondaryColor),
+      highlightColor: adjustColor(thirdColor),
       child: GridView.builder(
         padding: EdgeInsets.only(top: 24),
         shrinkWrap: true,
@@ -20,15 +20,15 @@ class CardRowShimmer extends StatelessWidget {
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
           childAspectRatio: 1,
-          mainAxisExtent: 80,
+          mainAxisExtent: 75,
         ),
         itemCount: itemCount,
         itemBuilder: (context, index) {
           return Container(
             height: 20,
             decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.all(Radius.circular(24)),
+              color: adjustColor(whiteColor),
+              borderRadius: BorderRadius.all(Radius.circular(18)),
             ),
           );
         },

@@ -8,18 +8,18 @@ class CarouselShimmer extends StatelessWidget {
 
   const CarouselShimmer({
     super.key,
-    this.customMarginTop = 34,
+    this.customMarginTop = 32,
     this.customMarginBottom = 16,
   });
 
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: secondaryColor,
-      highlightColor: thirdColor,
+      baseColor: adjustColor(secondaryColor),
+      highlightColor: adjustColor(thirdColor),
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 188,
+        height: 180,
         margin: EdgeInsets.only(
           left: 16,
           right: 16,
@@ -27,8 +27,8 @@ class CarouselShimmer extends StatelessWidget {
           bottom: customMarginBottom,
         ),
         decoration: BoxDecoration(
-          color: secondaryColor,
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          color: adjustColor(secondaryColor),
+          borderRadius: BorderRadius.all(Radius.circular(18)),
         ),
       ),
     );

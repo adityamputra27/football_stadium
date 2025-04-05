@@ -17,17 +17,17 @@ class CardGridShimmer extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         childAspectRatio: 1,
-        mainAxisExtent: 100,
+        mainAxisExtent: 95,
       ),
       itemCount: itemCount,
       itemBuilder: (context, index) {
         return Shimmer.fromColors(
-          baseColor: secondaryColor,
-          highlightColor: thirdColor,
+          baseColor: adjustColor(secondaryColor),
+          highlightColor: adjustColor(thirdColor),
           child: Container(
             decoration: BoxDecoration(
-              color: secondaryColor,
-              borderRadius: BorderRadius.all(Radius.circular(24)),
+              color: adjustColor(secondaryColor),
+              borderRadius: BorderRadius.all(Radius.circular(18)),
             ),
           ),
         );

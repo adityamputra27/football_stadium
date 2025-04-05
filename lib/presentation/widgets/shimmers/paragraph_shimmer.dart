@@ -16,15 +16,15 @@ class ParagraphShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: secondaryColor,
-      highlightColor: thirdColor,
+      baseColor: adjustColor(secondaryColor),
+      highlightColor: adjustColor(thirdColor),
       child: Container(
         width: customWidth,
         height: customHeight,
         margin: EdgeInsets.only(left: 15, right: 15, top: customMarginTop),
         decoration: BoxDecoration(
-          color: secondaryColor,
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          color: adjustColor(secondaryColor),
+          borderRadius: BorderRadius.all(Radius.circular(18)),
         ),
       ),
     );

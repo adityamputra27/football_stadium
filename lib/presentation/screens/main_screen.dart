@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:app_install_events/app_install_events.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/data/services/notification_service.dart';
+import 'package:football_stadium/presentation/screens/about_screen.dart';
 import 'package:football_stadium/presentation/screens/home_screen.dart';
+import 'package:football_stadium/presentation/screens/news_screen.dart';
 import 'package:football_stadium/presentation/screens/setting_screen.dart';
 import 'package:football_stadium/presentation/screens/league_screen.dart';
 import 'package:football_stadium/presentation/widgets/navigation/bottom_navigation.dart';
@@ -52,6 +55,66 @@ class _MainScreenState extends State<MainScreen> {
     return responseData['data']['status'];
   }
 
+  void detectUninstalledApp() async {
+    AppIUEvents appInstallEvents = AppIUEvents();
+    appInstallEvents.startListening();
+    appInstallEvents.appEvents.listen((event) {
+      if (event.type == IUEventType.uninstalled) {
+        resetUser().then((value) {
+          if (value == 1) {
+            if (kDebugMode) {
+              print('Uninstalled and reset user');
+            }
+          } else {
+            if (kDebugMode) {
+              print('Error resetting user');
+            }
+          }
+        });
+      } else if (event.type == IUEventType.installed) {
+        if (kDebugMode) {
+          print('Installed');
+        }
+      }
+    });
+  }
+
+  Future<int> resetUser() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    int userId = prefs.getInt('user_id')!;
+    String firebaseCloudMessagingToken =
+        await notificationService.getDeviceToken();
+
+    final response = await http.post(
+      Uri.parse("${Environment.baseURL}/reset-user"),
+      headers: <String, String>{
+        'Football-Stadium-App': Environment.valueHeader,
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'user_id': userId,
+        'fcm_token': firebaseCloudMessagingToken,
+      }),
+    );
+
+    dynamic responseData = jsonDecode(response.body);
+    bool isSuccess = responseData['data']['status'];
+
+    if (isSuccess) {
+      prefs.setInt('user_id', 0);
+      prefs.setBool('is_new_device', false);
+      prefs.remove('user_id');
+      prefs.remove('is_new_device');
+    } else {
+      if (kDebugMode) {
+        print('Error : ${response.statusCode}');
+      }
+    }
+
+    return isSuccess ? 1 : 0;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,9 +127,10 @@ class _MainScreenState extends State<MainScreen> {
       if (kDebugMode) {
         print(value);
       }
-    });
 
-    sendFirstNotification();
+      sendFirstNotification();
+      detectUninstalledApp();
+    });
   }
 
   void _onItemTapped(index) {
@@ -77,19 +141,24 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List screens = [HomeScreen(), LeagueScreen(), SettingScreen()];
+    List screens = [
+      HomeScreen(),
+      LeagueScreen(),
+      NewsScreen(),
+      SettingScreen(),
+      AboutScreen(),
+    ];
 
     return Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: ScrollConfiguration(
-          behavior: CustomScrollBehaviour(),
-          child: Column(
-            children: [
-              HeaderNavigation(),
-              Expanded(child: screens[selectedIndex]),
-            ],
-          ),
+      backgroundColor: adjustColor(backgroundColor),
+      body: ScrollConfiguration(
+        behavior: CustomScrollBehaviour(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            HeaderNavigation(),
+            Expanded(child: screens[selectedIndex]),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigation(

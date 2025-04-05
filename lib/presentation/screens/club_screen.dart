@@ -142,7 +142,7 @@ class _ClubScreenState extends State<ClubScreen> {
         children: [
           Text(
             widget.footballLeagueName,
-            style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
+            style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
           ),
           const SizedBox(height: 2),
           Text(
@@ -188,7 +188,7 @@ class _ClubScreenState extends State<ClubScreen> {
               ),
             ),
             isLoading
-                ? CardRowShimmer(itemCount: 7)
+                ? CardRowShimmer(itemCount: 10)
                 : GridView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -197,7 +197,7 @@ class _ClubScreenState extends State<ClubScreen> {
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                     childAspectRatio: 1,
-                    mainAxisExtent: 80,
+                    mainAxisExtent: 75,
                   ),
                   itemCount: footballClubs.length,
                   itemBuilder: (context, index) {
@@ -245,11 +245,14 @@ class _ClubScreenState extends State<ClubScreen> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          color: secondaryColor,
+                          borderRadius: BorderRadius.circular(18),
+                          color: adjustColor(secondaryColor),
                           border: Border(
                             top: BorderSide(
-                              color: index == 0 ? primaryColor : thirdColor,
+                              color:
+                                  index == 0
+                                      ? adjustColor(primaryColor)
+                                      : adjustColor(thirdColor),
                               width: 1.5,
                             ),
                           ),
@@ -265,7 +268,7 @@ class _ClubScreenState extends State<ClubScreen> {
                                   padding: const EdgeInsets.only(right: 12),
                                   child: Image.network(
                                     footballClub.logoWhite,
-                                    width: 30,
+                                    width: 25,
                                   ),
                                 ),
                                 Column(
@@ -276,14 +279,14 @@ class _ClubScreenState extends State<ClubScreen> {
                                       footballClub.clubName,
                                       style: semiBoldTextStyle.copyWith(
                                         color: whiteColor,
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                     Text(
                                       footballClub.stadiumName!,
                                       style: mediumTextStyle.copyWith(
                                         color: whiteColor,
-                                        fontSize: 12,
+                                        fontSize: 10,
                                       ),
                                     ),
                                   ],
@@ -312,7 +315,7 @@ class _ClubScreenState extends State<ClubScreen> {
       double paddingTop = 0;
 
       if (Platform.isAndroid) {
-        paddingTop = 24;
+        paddingTop = 18;
       }
 
       return Column(
@@ -344,7 +347,7 @@ class _ClubScreenState extends State<ClubScreen> {
     }
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: adjustColor(backgroundColor),
       body: SafeArea(
         child: ScrollConfiguration(
           behavior: CustomScrollBehaviour(),

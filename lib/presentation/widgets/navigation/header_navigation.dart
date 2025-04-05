@@ -85,7 +85,7 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
     double paddingTop = 0;
 
     if (Platform.isAndroid) {
-      paddingTop = 24;
+      paddingTop = 16;
     }
 
     return SafeArea(
@@ -104,13 +104,13 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
                       'Football Stadium',
                       style: boldTextStyle.copyWith(
                         color: whiteColor,
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
                     ),
                     Text(
                       'in the World',
                       style: semiBoldTextStyle.copyWith(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: primaryColor,
                       ),
                     ),
@@ -137,7 +137,7 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
                         ),
                         if (totalUnreadNotification > 0)
                           Positioned(
-                            right: 5,
+                            right: 6,
                             top: 3,
                             child: Container(
                               padding: const EdgeInsets.all(4),
@@ -161,10 +161,10 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
               ],
             ),
             Container(
-              margin: const EdgeInsets.only(top: 24),
+              margin: const EdgeInsets.only(top: 16),
               width: double.infinity,
               height: 1,
-              decoration: BoxDecoration(color: thirdColor),
+              decoration: BoxDecoration(color: adjustColor(thirdColor)),
             ),
           ],
         ),

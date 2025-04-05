@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(
               left: 15,
               right: 15,
-              top: Platform.isIOS ? 6 : 10,
+              top: Platform.isIOS ? 6 : 12,
             ),
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.all(
-                                          Radius.circular(16),
+                                          Radius.circular(14),
                                         ),
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         color: Colors.white,
                                         borderRadius: BorderRadius.all(
-                                          Radius.circular(16),
+                                          Radius.circular(14),
                                         ),
                                         gradient: LinearGradient(
                                           begin: FractionalOffset.topCenter,
@@ -336,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Popular League',
-              style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
+              style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
             ),
 
             isLoading
@@ -350,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     childAspectRatio: 1,
-                    mainAxisExtent: 100,
+                    mainAxisExtent: 95,
                   ),
                   itemCount: mainData?.popularLeagues.length,
                   itemBuilder: (context, index) {
@@ -378,12 +378,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 2,
                               color:
                                   selectedLeague == index
-                                      ? primaryColor
-                                      : thirdColor,
+                                      ? adjustColor(primaryColor)
+                                      : adjustColor(thirdColor),
                             ),
                           ),
-                          borderRadius: BorderRadius.circular(24),
-                          color: secondaryColor,
+                          borderRadius: BorderRadius.circular(18),
+                          color: adjustColor(secondaryColor),
                         ),
                         padding: EdgeInsets.all(8),
                         child: Container(
@@ -411,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Popular Stadium',
-              style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
+              style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
             ),
             isLoading
                 ? CardRowShimmer()
@@ -424,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                     childAspectRatio: 1,
-                    mainAxisExtent: 80,
+                    mainAxisExtent: 75,
                   ),
                   itemCount: mainData?.popularClubs.length,
                   itemBuilder: (context, index) {
@@ -445,11 +445,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          color: secondaryColor,
+                          borderRadius: BorderRadius.circular(18),
+                          color: adjustColor(secondaryColor),
                           border: Border(
                             top: BorderSide(
-                              color: index == 0 ? primaryColor : thirdColor,
+                              color:
+                                  index == 0
+                                      ? adjustColor(primaryColor)
+                                      : adjustColor(thirdColor),
                               width: 1.5,
                             ),
                           ),
@@ -457,7 +460,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Row(
                               children: [
@@ -465,7 +468,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding: const EdgeInsets.only(right: 12),
                                   child: Image.network(
                                     popularClub!.logoWhite!,
-                                    width: 30,
+                                    width: 25,
                                   ),
                                 ),
                                 Column(
@@ -476,14 +479,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                       popularClub.clubName,
                                       style: semiBoldTextStyle.copyWith(
                                         color: whiteColor,
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                     Text(
                                       popularClub.stadiumName!,
                                       style: mediumTextStyle.copyWith(
                                         color: whiteColor,
-                                        fontSize: 12,
+                                        fontSize: 10,
                                       ),
                                     ),
                                   ],
@@ -494,7 +497,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               "Capacity: ${popularClub.capacity}",
                               style: mediumTextStyle.copyWith(
                                 color: whiteColor,
-                                fontSize: 12,
+                                fontSize: 10,
                               ),
                             ),
                           ],

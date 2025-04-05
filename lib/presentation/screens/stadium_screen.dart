@@ -108,8 +108,8 @@ class _StadiumScreenState extends State<StadiumScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Allianz Arena Stadium',
-            style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
+            widget.footballStadiumName,
+            style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
           ),
         ],
       );
@@ -160,7 +160,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                                 Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(16),
+                                      Radius.circular(14),
                                     ),
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
@@ -180,7 +180,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                                     ),
                                     color: Colors.white,
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(16),
+                                      Radius.circular(14),
                                     ),
                                     gradient: LinearGradient(
                                       begin: FractionalOffset.topCenter,
@@ -411,16 +411,16 @@ class _StadiumScreenState extends State<StadiumScreen> {
     Widget buildHeader() {
       double paddingTop = 0;
       if (Platform.isAndroid) {
-        paddingTop = 24;
+        paddingTop = 18;
       }
       return Container(
         padding: EdgeInsets.only(
           left: 15,
           right: 15,
-          bottom: 24,
+          bottom: 18,
           top: paddingTop,
         ),
-        color: backgroundColor,
+        color: adjustColor(backgroundColor),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [buildButton(), buildTitle()],
@@ -489,7 +489,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
     }
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: adjustColor(backgroundColor),
       body: SafeArea(
         child: ScrollConfiguration(
           behavior: CustomScrollBehaviour(),

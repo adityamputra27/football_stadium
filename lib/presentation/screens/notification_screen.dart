@@ -5,13 +5,13 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/data/models/notification_model.dart';
+import 'package:football_stadium/presentation/widgets/shimmers/card_row_shimmer.dart';
 import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/environment.dart';
 import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationScreen extends StatefulWidget {
@@ -26,6 +26,7 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   bool isLoading = true;
   List<NotificationModel> notifications = [];
+  List<int> markedNotifications = [];
   BannerAd? _bannerAd;
 
   Future<void> fetchNotifications() async {
@@ -148,26 +149,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
 
             isLoading
-                ? Shimmer.fromColors(
-                  baseColor: secondaryColor,
-                  highlightColor: thirdColor,
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(bottom: 16),
-                    itemCount: 7,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        height: 80,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: whiteColor,
-                        ),
-                        margin: const EdgeInsets.only(bottom: 12),
-                      );
-                    },
-                  ),
-                )
+                ? CardRowShimmer(itemCount: 7)
                 : notifications.isEmpty
                 ? Center(
                   child: Padding(
@@ -193,10 +175,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   itemCount: notifications.length,
                   itemBuilder: (context, index) {
                     final NotificationModel notification = notifications[index];
-
                     return GestureDetector(
                       onTap: () {
                         widget.onMarkRead(notification.id);
+                        setState(() {
+                          markedNotifications.add(notification.id);
+                        });
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12),
@@ -221,7 +205,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             left: 16,
                             right: 16,
                           ),
-                          tileColor: secondaryColor,
+                          tileColor:
+                              markedNotifications.contains(notification.id)
+                                  ? adjustColor(secondaryColor)
+                                  : adjustColor(thirdColor),
                           title: Padding(
                             padding: const EdgeInsets.only(bottom: 4),
                             child: Text(
@@ -253,17 +240,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
       double paddingTop = 0;
 
       if (Platform.isAndroid) {
-        paddingTop = 24;
+        paddingTop = 18;
       }
 
       return Container(
         padding: EdgeInsets.only(
           left: 15,
           right: 15,
-          bottom: 24,
+          bottom: 18,
           top: paddingTop,
         ),
-        color: backgroundColor,
+        color: adjustColor(backgroundColor),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [buildButton(), buildTitle()],
@@ -290,7 +277,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: adjustColor(backgroundColor),
       body: SafeArea(
         child: ScrollConfiguration(
           behavior: CustomScrollBehaviour(),

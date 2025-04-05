@@ -1,4 +1,4 @@
-package com.dittmptrr27.footballstadium
+package com.dittmptrr27.football_stadium
 
 import io.flutter.embedding.android.FlutterActivity
 

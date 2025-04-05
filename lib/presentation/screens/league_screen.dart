@@ -21,7 +21,11 @@ class LeagueScreen extends StatefulWidget {
 class _LeagueScreenState extends State<LeagueScreen> {
   int selectedLeague = 0;
   BannerAd? _bannerAd;
+  InterstitialAd? _interstitialAd;
+  bool isInterstitialAdLoaded = false;
+
   List<FootballLeagueModel> footballLeagues = [];
+  FootballLeagueModel? selectedFootballLeague;
   bool isLoading = true;
 
   Future<void> fetchFootballLeagues() async {
@@ -65,6 +69,37 @@ class _LeagueScreenState extends State<LeagueScreen> {
     ).load();
   }
 
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              Get.to(
+                () => ClubScreen(
+                  footballLeagueId: selectedFootballLeague!.id,
+                  footballLeagueLogo: selectedFootballLeague!.logoWhite,
+                  footballLeagueName: selectedFootballLeague!.name,
+                  footballClubTotal: selectedFootballLeague!.clubTotal,
+                ),
+                transition: Transition.rightToLeft,
+              );
+            },
+          );
+
+          setState(() {
+            _interstitialAd = ad;
+          });
+        },
+        onAdFailedToLoad: (err) {
+          print('error interstitial ad');
+        },
+      ),
+    );
+  }
+
   Future<InitializationStatus> _initGoogleMobileAds() {
     return MobileAds.instance.initialize();
   }
@@ -74,6 +109,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
     super.initState();
     _initGoogleMobileAds();
     _loadBannerAd();
+    _loadInterstitialAd();
 
     // for fetching data API's
     fetchFootballLeagues();
@@ -83,6 +119,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
   void dispose() {
     super.dispose();
     _bannerAd?.dispose();
+    _interstitialAd?.dispose();
   }
 
   @override
@@ -99,26 +136,49 @@ class _LeagueScreenState extends State<LeagueScreen> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               childAspectRatio: 1,
-              mainAxisExtent: 100,
+              mainAxisExtent: 95,
             ),
             itemCount: footballLeagues.length,
             itemBuilder: (context, index) {
               FootballLeagueModel footballLeague = footballLeagues[index];
               return GestureDetector(
                 onTap: () {
+                  if (!isInterstitialAdLoaded) {
+                    if (_interstitialAd != null) {
+                      _interstitialAd!.show();
+                      setState(() {
+                        isInterstitialAdLoaded = true;
+                      });
+                    } else {
+                      setState(() {
+                        isInterstitialAdLoaded = true;
+                      });
+                      Get.to(
+                        () => ClubScreen(
+                          footballLeagueId: footballLeague.id,
+                          footballLeagueLogo: footballLeague.logoWhite,
+                          footballLeagueName: footballLeague.name,
+                          footballClubTotal: footballLeague.clubTotal,
+                        ),
+                        transition: Transition.rightToLeft,
+                      );
+                    }
+                  } else {
+                    Get.to(
+                      () => ClubScreen(
+                        footballLeagueId: footballLeague.id,
+                        footballLeagueLogo: footballLeague.logoWhite,
+                        footballLeagueName: footballLeague.name,
+                        footballClubTotal: footballLeague.clubTotal,
+                      ),
+                      transition: Transition.rightToLeft,
+                    );
+                  }
+
                   setState(() {
+                    selectedFootballLeague = footballLeague;
                     selectedLeague = index;
                   });
-
-                  Get.to(
-                    () => ClubScreen(
-                      footballLeagueId: footballLeague.id,
-                      footballLeagueLogo: footballLeague.logoWhite,
-                      footballLeagueName: footballLeague.name,
-                      footballClubTotal: footballLeague.clubTotal,
-                    ),
-                    transition: Transition.rightToLeft,
-                  );
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -126,26 +186,34 @@ class _LeagueScreenState extends State<LeagueScreen> {
                       top: BorderSide(
                         width: 2,
                         color:
-                            selectedLeague == index ? primaryColor : thirdColor,
+                            selectedLeague == index
+                                ? primaryColor
+                                : adjustColor(thirdColor),
                       ),
                       bottom: BorderSide(
                         width: 2,
                         color:
-                            selectedLeague == index ? primaryColor : thirdColor,
+                            selectedLeague == index
+                                ? primaryColor
+                                : adjustColor(thirdColor),
                       ),
                       left: BorderSide(
                         width: 2,
                         color:
-                            selectedLeague == index ? primaryColor : thirdColor,
+                            selectedLeague == index
+                                ? primaryColor
+                                : adjustColor(thirdColor),
                       ),
                       right: BorderSide(
                         width: 2,
                         color:
-                            selectedLeague == index ? primaryColor : thirdColor,
+                            selectedLeague == index
+                                ? primaryColor
+                                : adjustColor(thirdColor),
                       ),
                     ),
-                    borderRadius: BorderRadius.circular(24),
-                    color: secondaryColor,
+                    borderRadius: BorderRadius.circular(18),
+                    color: adjustColor(secondaryColor),
                   ),
                   padding: EdgeInsets.all(6),
                   child: Container(
@@ -165,7 +233,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
     Widget buildTitle() {
       return Text(
         'Select League',
-        style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
+        style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
       );
     }
 

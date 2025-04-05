@@ -24,8 +24,8 @@ class _SplashScreenState extends State<SplashScreen> {
   bool isLoading = true;
   NotificationService notificationService = NotificationService();
 
-  String? appVersion = '';
-  String? appBuildNumber = '';
+  String appVersion = '';
+  String appBuildNumber = '';
 
   Future<void> getPackageInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -81,13 +81,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    getPackageInfo();
     registerDevice();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: adjustColor(backgroundColor),
       body: Container(
         padding: EdgeInsets.all(15),
         child: Stack(
@@ -149,8 +150,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    // 'v${appVersion.toString()} (${appBuildNumber.toString()})',
-                    'v1.0.0 (01)',
+                    'v${appVersion.toString()} (${appBuildNumber.toString()})',
                     style: mediumTextStyle.copyWith(color: whiteColor),
                   ),
                   const SizedBox(height: 16),

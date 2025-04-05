@@ -38,14 +38,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+          topLeft: Radius.circular(18),
+          topRight: Radius.circular(18),
         ),
-        child: Container(
-          height: 85,
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: thirdColor, width: 2)),
-          ),
+        child: SizedBox(
+          height: 75,
           child: Theme(
             data: ThemeData(splashColor: Colors.transparent),
             child: BottomNavigationBar(
@@ -64,7 +61,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
               type: BottomNavigationBarType.fixed,
               selectedItemColor: whiteColor,
               unselectedItemColor: grayColor,
-              backgroundColor: secondaryColor,
+              backgroundColor: adjustColor(secondaryColor),
               items: [
                 BottomNavigationBarItem(
                   icon: Container(
@@ -76,9 +73,16 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 BottomNavigationBarItem(
                   icon: Container(
                     padding: EdgeInsets.only(bottom: 6),
-                    child: Icon(Icons.stadium_rounded, size: 20),
+                    child: Icon(Icons.sports_soccer, size: 20),
                   ),
-                  label: 'Stadium',
+                  label: 'League',
+                ),
+                BottomNavigationBarItem(
+                  icon: Container(
+                    padding: EdgeInsets.only(bottom: 6),
+                    child: Icon(Icons.article, size: 20),
+                  ),
+                  label: 'News',
                 ),
                 BottomNavigationBarItem(
                   icon: Container(
@@ -86,6 +90,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     child: Icon(Icons.settings, size: 20),
                   ),
                   label: 'Setting',
+                ),
+                BottomNavigationBarItem(
+                  icon: Container(
+                    padding: EdgeInsets.only(bottom: 6),
+                    child: Icon(Icons.info, size: 20),
+                  ),
+                  label: 'About',
                 ),
               ],
             ),
