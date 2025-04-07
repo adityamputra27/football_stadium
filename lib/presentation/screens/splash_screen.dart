@@ -74,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     Timer(const Duration(seconds: 2), () {
-      Get.to(
+      Get.offAll(
         () => const MainScreen(activeIndex: 0),
         transition: Transition.rightToLeft,
       );
