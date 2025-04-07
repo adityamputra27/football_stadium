@@ -9,6 +9,14 @@ const String debugIOSBannerAdUnitId = "ca-app-pub-3940256099942544/2934735716";
 const String prodAndroidBannerAdUnitId =
     "ca-app-pub-8018841107474033/4772019917";
 
+const String debugAndroidInterstitialAdUnitId =
+    "ca-app-pub-3940256099942544/1033173712";
+const String prodAndroidInterstitialAdUnitId =
+    "ca-app-pub-8018841107474033/2221878190";
+
+const String debugIOSInterstitialAdUnitId =
+    "ca-app-pub-3940256099942544/4411468910";
+
 class AdHelper {
   static String get bannerAdUnitId {
     if (Platform.isAndroid) {
@@ -30,9 +38,17 @@ class AdHelper {
 
   static String get interstitialAdUnitId {
     if (Platform.isAndroid) {
-      return "ca-app-pub-3940256099942544/1033173712";
+      if (kDebugMode) {
+        return debugAndroidInterstitialAdUnitId;
+      } else {
+        return prodAndroidInterstitialAdUnitId;
+      }
     } else if (Platform.isIOS) {
-      return "ca-app-pub-3940256099942544/4411468910";
+      if (kDebugMode) {
+        return debugIOSInterstitialAdUnitId;
+      } else {
+        return debugIOSInterstitialAdUnitId;
+      }
     } else {
       throw UnsupportedError("Unsupported platform");
     }
