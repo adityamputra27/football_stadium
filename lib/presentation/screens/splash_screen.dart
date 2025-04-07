@@ -61,11 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
       }),
     );
 
-    print('splash screen testing');
-    print(response.body);
-    print(response.statusCode);
-
-    final prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     dynamic responseData = jsonDecode(response.body);
     bool responseStatus = responseData['data']['status'];
@@ -73,15 +69,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (responseStatus) {
       prefs.setInt('user_id', responseUserId);
-      Timer(const Duration(seconds: 3), () {
-        Get.to(
-          () => const MainScreen(activeIndex: 0),
-          transition: Transition.rightToLeft,
-        );
-      });
     } else {
       prefs.setInt('user_id', 0);
     }
+
+    Timer(const Duration(seconds: 2), () {
+      Get.to(
+        () => const MainScreen(activeIndex: 0),
+        transition: Transition.rightToLeft,
+      );
+    });
   }
 
   @override

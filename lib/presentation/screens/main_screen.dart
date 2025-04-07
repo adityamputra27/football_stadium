@@ -127,10 +127,10 @@ class _MainScreenState extends State<MainScreen> {
       if (kDebugMode) {
         print(value);
       }
-
-      sendFirstNotification();
-      detectUninstalledApp();
     });
+
+    sendFirstNotification();
+    // detectUninstalledApp();
   }
 
   void _onItemTapped(index) {
