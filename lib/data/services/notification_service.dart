@@ -23,7 +23,7 @@ class NotificationService {
     RemoteMessage message,
   ) async {
     var androidInitializationSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_notification',
     );
     var iosInitializationSettings = const DarwinInitializationSettings();
     var initializationSettings = InitializationSettings(
@@ -64,8 +64,9 @@ class NotificationService {
           channel.name.toString(),
           importance: Importance.high,
           priority: Priority.high,
-          playSound: true,
+          playSound: false,
           ticker: 'ticker',
+          color: const Color(0xff0A141B),
         );
 
     const DarwinNotificationDetails darwinNotificationDetails =
@@ -98,17 +99,23 @@ class NotificationService {
       carPlay: true,
       criticalAlert: true,
       provisional: true,
-      sound: true,
+      sound: false,
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('user granted permissions');
+      if (kDebugMode) {
+        print('user granted permissions');
+      }
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      print('user granted provisional permission');
+      if (kDebugMode) {
+        print('user granted provisional permission');
+      }
     } else {
       AppSettings.openAppSettings(type: AppSettingsType.notification);
-      print('user denied permission');
+      if (kDebugMode) {
+        print('user denied permission');
+      }
     }
   }
 

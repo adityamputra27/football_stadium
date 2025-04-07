@@ -61,21 +61,27 @@ class _SplashScreenState extends State<SplashScreen> {
       }),
     );
 
+    print('splash screen testing');
+    print(response.body);
+    print(response.statusCode);
+
     final prefs = await SharedPreferences.getInstance();
 
-    var responseData = jsonDecode(response.body);
-    if (responseData['data']['status'] == true) {
-      prefs.setInt('user_id', responseData['data']['data']['id']);
+    dynamic responseData = jsonDecode(response.body);
+    bool responseStatus = responseData['data']['status'];
+    int responseUserId = responseData['data']['data']['id'];
+
+    if (responseStatus) {
+      prefs.setInt('user_id', responseUserId);
+      Timer(const Duration(seconds: 3), () {
+        Get.to(
+          () => const MainScreen(activeIndex: 0),
+          transition: Transition.rightToLeft,
+        );
+      });
     } else {
       prefs.setInt('user_id', 0);
     }
-
-    Timer(const Duration(seconds: 3), () {
-      Get.to(
-        () => const MainScreen(activeIndex: 0),
-        transition: Transition.rightToLeft,
-      );
-    });
   }
 
   @override
@@ -102,7 +108,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/images/stadium-logo.png',
+                        'assets/images/new-stadium-logo.png',
                         width: 40,
                         height: 40,
                       ),

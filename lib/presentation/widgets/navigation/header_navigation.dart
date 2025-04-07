@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/data/services/notification_service.dart';
 import 'package:football_stadium/presentation/screens/notification_screen.dart';
 import 'package:football_stadium/utils/environment.dart';
 import 'package:football_stadium/utils/theme.dart';
@@ -70,14 +71,24 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
     }
   }
 
+  NotificationService notificationService = NotificationService();
+
+  void countNotificationFromFirebase() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      notificationService.getDeviceToken().then((value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            firebaseNotificationCount++;
+          });
+        }
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      setState(() {
-        firebaseNotificationCount++;
-      });
-    });
+    countNotificationFromFirebase();
   }
 
   @override
