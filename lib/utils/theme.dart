@@ -12,6 +12,7 @@ const Color dotIndicatorDefaultColor = Color(0xff929292);
 const Color dotIndicatorActiveColor = Color(0xff454545);
 const Color initialGradientColor = Color(0xff232425);
 const Color subtitleColor = Color.fromARGB(255, 205, 205, 205);
+const Color subtitleSecondColor = Color.fromARGB(255, 149, 149, 149);
 
 var thinTextStyle = TextStyle(
   fontFamily: fontFamily,

@@ -36,6 +36,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> registerDevice() async {
+    notificationService.requestNotificationPermission();
+    notificationService.firebaseInit(context);
+    notificationService.isTokenRefresh();
+
     String deviceId = '-';
     String firebaseCloudMessagingToken =
         await notificationService.getDeviceToken();

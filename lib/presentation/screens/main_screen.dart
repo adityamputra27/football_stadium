@@ -52,6 +52,8 @@ class _MainScreenState extends State<MainScreen> {
     var responseData = jsonDecode(response.body);
     prefs.setBool('is_new_device', responseData['data']['is_new_device']);
 
+    await notificationService.subscribeToAllTopics();
+
     return responseData['data']['status'];
   }
 
@@ -128,7 +130,6 @@ class _MainScreenState extends State<MainScreen> {
         print(value);
       }
     });
-
     sendFirstNotification();
     // detectUninstalledApp();
   }
@@ -155,6 +156,7 @@ class _MainScreenState extends State<MainScreen> {
         behavior: CustomScrollBehaviour(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             HeaderNavigation(),
             Expanded(child: screens[selectedIndex]),

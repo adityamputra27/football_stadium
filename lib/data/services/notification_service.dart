@@ -18,6 +18,17 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  static final Map<String, String> _firebaseTopicNotifications = {
+    'topic_football_stadium': 'Football Stadium',
+    'topic_football_league': 'Football League',
+    'topic_football_player': 'Football Player',
+    'topic_football_club': 'Football Club',
+    'topic_football_match': 'Football Match',
+    'topic_football_news': 'Football News',
+    'topic_football_event': 'Football Event',
+    'topic_welcome': 'Welcome',
+  };
+
   void initLocalNotifications(
     BuildContext context,
     RemoteMessage message,
@@ -48,6 +59,20 @@ class NotificationService {
       initLocalNotifications(context, message);
       showNotification(message);
     });
+  }
+
+  Future<void> subscribeToAllTopics() async {
+    for (final firebaseTopicNotification in _firebaseTopicNotifications.keys) {
+      await messaging.subscribeToTopic(firebaseTopicNotification);
+    }
+  }
+
+  Future<void> toggleSubscription(String category, bool subcribe) async {
+    if (_firebaseTopicNotifications.containsKey(category)) {
+      await messaging.subscribeToTopic(category);
+    } else {
+      await messaging.unsubscribeFromTopic(category);
+    }
   }
 
   Future<void> showNotification(RemoteMessage message) async {
