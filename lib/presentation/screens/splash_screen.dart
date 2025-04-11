@@ -53,6 +53,18 @@ class _SplashScreenState extends State<SplashScreen> {
       deviceId = iosDeviceInfo.localizedModel;
     }
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isNewDevice = prefs.getBool('is_new_device') ?? false;
+    if (isNewDevice) {
+      Timer(const Duration(seconds: 2), () {
+        Get.offAll(
+          () => const MainScreen(activeIndex: 0),
+          transition: Transition.rightToLeft,
+        );
+      });
+      return;
+    }
+
     final response = await http.post(
       Uri.parse("${Environment.baseURL}/register-device"),
       headers: <String, String>{
@@ -64,8 +76,6 @@ class _SplashScreenState extends State<SplashScreen> {
         'fcm_token': firebaseCloudMessagingToken,
       }),
     );
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     dynamic responseData = jsonDecode(response.body);
     bool responseStatus = responseData['data']['status'];

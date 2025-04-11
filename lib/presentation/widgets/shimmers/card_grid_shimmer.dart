@@ -14,10 +14,10 @@ class CardGridShimmer extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
         childAspectRatio: 1,
-        mainAxisExtent: 95,
+        mainAxisExtent: 90,
       ),
       itemCount: itemCount,
       itemBuilder: (context, index) {

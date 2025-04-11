@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @pragma('vm:entry-point')
 void onDidReceiveBackgroundNotificationResponse(
@@ -68,7 +69,7 @@ class NotificationService {
   }
 
   Future<void> toggleSubscription(String category, bool subcribe) async {
-    if (_firebaseTopicNotifications.containsKey(category)) {
+    if (_firebaseTopicNotifications.containsKey(category) && subcribe) {
       await messaging.subscribeToTopic(category);
     } else {
       await messaging.unsubscribeFromTopic(category);
@@ -92,6 +93,7 @@ class NotificationService {
           playSound: false,
           ticker: 'ticker',
           color: const Color(0xff0A141B),
+          colorized: true,
         );
 
     const DarwinNotificationDetails darwinNotificationDetails =
@@ -153,5 +155,34 @@ class NotificationService {
     messaging.onTokenRefresh.listen((event) {
       event.toString();
     });
+  }
+
+  Future<Map<String, bool>> loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'topic_football_stadium': prefs.getBool('topic_football_stadium') ?? true,
+      'topic_football_league': prefs.getBool('topic_football_league') ?? true,
+      'topic_football_player': prefs.getBool('topic_football_player') ?? true,
+      'topic_football_club': prefs.getBool('topic_football_club') ?? true,
+      'topic_football_match': prefs.getBool('topic_football_match') ?? true,
+      'topic_football_news': prefs.getBool('topic_football_news') ?? true,
+      'topic_football_event': prefs.getBool('topic_football_event') ?? true,
+    };
+  }
+
+  Future<void> savePreferences(Map<String, bool> prefs) async {
+    final storage = await SharedPreferences.getInstance();
+    await Future.wait([
+      storage.setBool(
+        'topic_football_stadium',
+        prefs['topic_football_stadium']!,
+      ),
+      storage.setBool('topic_football_league', prefs['topic_football_league']!),
+      storage.setBool('topic_football_player', prefs['topic_football_player']!),
+      storage.setBool('topic_football_club', prefs['topic_football_club']!),
+      storage.setBool('topic_football_match', prefs['topic_football_match']!),
+      storage.setBool('topic_football_news', prefs['topic_football_news']!),
+      storage.setBool('topic_football_event', prefs['topic_football_event']!),
+    ]);
   }
 }

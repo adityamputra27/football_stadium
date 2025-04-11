@@ -298,8 +298,8 @@ class _StadiumScreenState extends State<StadiumScreen> {
                         return GestureDetector(
                           onTap: () {},
                           child: AnimatedContainer(
-                            width: 8,
-                            height: 8,
+                            width: 6,
+                            height: 6,
                             margin: EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(
                               color:
@@ -335,7 +335,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                   title,
                   style: regularTextStyle.copyWith(
                     color: whiteColor,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -345,7 +345,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                   ':',
                   style: regularTextStyle.copyWith(
                     color: whiteColor,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -354,7 +354,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                   value,
                   style: mediumTextStyle.copyWith(
                     color: whiteColor,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -372,7 +372,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
               padding: const EdgeInsets.only(bottom: 16),
               child: Text(
                 'Information',
-                style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
+                style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
               ),
             ),
             buildTableRow('Capacity', footballStadium!.capacity),
@@ -396,7 +396,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
               padding: const EdgeInsets.only(bottom: 16, left: 8),
               child: Text(
                 'History',
-                style: boldTextStyle.copyWith(color: whiteColor, fontSize: 18),
+                style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
               ),
             ),
             Html(

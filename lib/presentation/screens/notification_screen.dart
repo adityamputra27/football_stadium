@@ -1,21 +1,23 @@
 import 'dart:async';
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/data/database/notification_database.dart';
+import 'package:football_stadium/data/models/local_notification_model.dart';
 import 'package:football_stadium/data/models/notification_model.dart';
 import 'package:football_stadium/presentation/widgets/shimmers/card_row_shimmer.dart';
 import 'package:football_stadium/utils/ad_helper.dart';
-import 'package:football_stadium/utils/environment.dart';
+// import 'package:football_stadium/utils/environment.dart';
 import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:http/http.dart' as http;
 
 class NotificationScreen extends StatefulWidget {
-  final Function(int id) onMarkRead;
+  final Function(String id) onMarkRead;
 
   const NotificationScreen({super.key, required this.onMarkRead});
 
@@ -26,42 +28,57 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   bool isLoading = true;
   List<NotificationModel> notifications = [];
-  List<int> markedNotifications = [];
+  List<String> markedNotifications = [];
   BannerAd? _bannerAd;
+
+  List<LocalNotificationModel> localNotifications = [];
 
   Future<void> fetchNotifications() async {
     try {
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      final userId = sharedPreferences.getInt('user_id');
+      setState(() {
+        isLoading = true;
+      });
+      List<LocalNotificationModel> notifications =
+          await NotificationDatabase.instance.fetchNotifications();
 
-      final response = await http.get(
-        Uri.parse("${Environment.baseURL}/notification-list/$userId/user"),
-        headers: {
-          'Accept-Type': 'application/json',
-          'Football-Stadium-App': Environment.valueHeader,
-        },
-      );
+      // final List<LocalNotificationModel> formattedNotifications =
+      //     await notifications;
 
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body)['data'];
-        final List<dynamic> notificationsJson = jsonData['data'];
+      setState(() {
+        localNotifications = notifications;
+        isLoading = false;
+      });
+      // SharedPreferences sharedPreferences =
+      //     await SharedPreferences.getInstance();
+      // final userId = sharedPreferences.getInt('user_id');
 
-        setState(() {
-          notifications =
-              notificationsJson
-                  .map(
-                    (notification) => NotificationModel.fromJson(notification),
-                  )
-                  .toList();
+      // final response = await http.get(
+      //   Uri.parse("${Environment.baseURL}/notification-list/$userId/user"),
+      //   headers: {
+      //     'Accept-Type': 'application/json',
+      //     'Football-Stadium-App': Environment.valueHeader,
+      //   },
+      // );
 
-          isLoading = false;
-        });
-      } else {
-        if (kDebugMode) {
-          print('Error : ${response.statusCode}');
-        }
-      }
+      // if (response.statusCode == 200) {
+      //   final jsonData = jsonDecode(response.body)['data'];
+      //   final List<dynamic> notificationsJson = jsonData['data'];
+
+      //   setState(() {
+      //     notifications =
+      //         notificationsJson
+      //             .map(
+      //               (notification) => NotificationModel.fromJson(notification),
+      //             )
+      //             .toList();
+
+      //     isLoading = false;
+      //   });
+      // } else {
+      //   if (kDebugMode) {
+      //     print('Error : ${response.statusCode}');
+      //   }
+      // }
     } catch (e) {
       if (kDebugMode) {
         print('Error : $e');
@@ -150,7 +167,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
             isLoading
                 ? CardRowShimmer(itemCount: 7)
-                : notifications.isEmpty
+                : localNotifications.isEmpty
                 ? Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 50),
@@ -172,9 +189,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   padding: const EdgeInsets.only(bottom: 16),
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: notifications.length,
+                  itemCount: localNotifications.length,
                   itemBuilder: (context, index) {
-                    final NotificationModel notification = notifications[index];
+                    final LocalNotificationModel notification =
+                        localNotifications[index];
                     return GestureDetector(
                       onTap: () {
                         widget.onMarkRead(notification.id);
@@ -189,6 +207,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           border: Border(
                             top: BorderSide(color: thirdColor, width: 1.5),
                           ),
+                          color: adjustColor(secondaryColor),
                         ),
                         child: ListTile(
                           leading: Icon(
@@ -206,7 +225,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             right: 16,
                           ),
                           tileColor:
-                              markedNotifications.contains(notification.id)
+                              notification.isRead
                                   ? adjustColor(secondaryColor)
                                   : adjustColor(thirdColor),
                           title: Padding(
@@ -220,7 +239,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             ),
                           ),
                           subtitle: Text(
-                            notification.description,
+                            notification.body,
                             style: mediumTextStyle.copyWith(
                               fontSize: 12,
                               color: subtitleColor,

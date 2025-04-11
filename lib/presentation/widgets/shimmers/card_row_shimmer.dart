@@ -4,7 +4,14 @@ import 'package:shimmer/shimmer.dart';
 
 class CardRowShimmer extends StatelessWidget {
   final int itemCount;
-  const CardRowShimmer({super.key, this.itemCount = 3});
+  final double height;
+  final double radius;
+  const CardRowShimmer({
+    super.key,
+    this.itemCount = 3,
+    this.height = 70,
+    this.radius = 18,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +27,7 @@ class CardRowShimmer extends StatelessWidget {
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
           childAspectRatio: 1,
-          mainAxisExtent: 75,
+          mainAxisExtent: height,
         ),
         itemCount: itemCount,
         itemBuilder: (context, index) {
@@ -28,7 +35,7 @@ class CardRowShimmer extends StatelessWidget {
             height: 20,
             decoration: BoxDecoration(
               color: adjustColor(whiteColor),
-              borderRadius: BorderRadius.all(Radius.circular(18)),
+              borderRadius: BorderRadius.all(Radius.circular(radius)),
             ),
           );
         },

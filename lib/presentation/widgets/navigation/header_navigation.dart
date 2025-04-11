@@ -1,16 +1,20 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/data/database/notification_database.dart';
+import 'package:football_stadium/data/models/local_notification_model.dart';
 import 'package:football_stadium/data/services/notification_service.dart';
 import 'package:football_stadium/presentation/screens/notification_screen.dart';
-import 'package:football_stadium/utils/environment.dart';
+// import 'package:football_stadium/utils/environment.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/route_manager.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class HeaderNavigation extends StatefulWidget {
   const HeaderNavigation({super.key});
@@ -20,50 +24,77 @@ class HeaderNavigation extends StatefulWidget {
 }
 
 class _HeaderNavigationState extends State<HeaderNavigation> {
-  int unreadNotificationCount = 0;
   int firebaseNotificationCount = 0;
 
-  int get totalUnreadNotification =>
-      unreadNotificationCount + firebaseNotificationCount;
+  int get totalUnreadNotification => firebaseNotificationCount;
 
-  Future<void> markNotificationAsRead(int id) async {
+  Future<void> markNotificationAsRead(String id) async {
     try {
+      NotificationDatabase.instance.markNotificationAsRead(id);
+
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
-      final userId = sharedPreferences.getInt('user_id');
 
-      final response = await http.post(
-        Uri.parse("${Environment.baseURL}/notification-list/$userId/mark/$id"),
-        headers: {
-          'Content-Type': 'application/json',
-          'Football-Stadium-App': Environment.valueHeader,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body)['data'];
-        final int remainingUnreadNotificationCount =
-            jsonData['data']['remaining_unread_notification_count'];
-
-        setState(() {
-          firebaseNotificationCount = 0;
-          unreadNotificationCount = remainingUnreadNotificationCount;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Notification mark as read success',
-              style: regularTextStyle,
-              textAlign: TextAlign.center,
-            ),
-          ),
+      int currentCount = sharedPreferences.getInt('counter_notification') ?? 0;
+      if (currentCount > 0) {
+        await sharedPreferences.setInt(
+          'counter_notification',
+          currentCount - 1,
         );
-      } else {
-        if (kDebugMode) {
-          print('Error : ${response.statusCode}');
-        }
+        setState(() {
+          firebaseNotificationCount = currentCount - 1;
+        });
       }
+
+      // setState(() {
+      //   unreadNotificationCount--;
+      // });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Notification mark as read success',
+            style: regularTextStyle,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+      // SharedPreferences sharedPreferences =
+      //     await SharedPreferences.getInstance();
+      // final userId = sharedPreferences.getInt('user_id');
+
+      // final response = await http.post(
+      //   Uri.parse("${Environment.baseURL}/notification-list/$userId/mark/$id"),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Football-Stadium-App': Environment.valueHeader,
+      //   },
+      // );
+
+      // if (response.statusCode == 200) {
+      //   final jsonData = jsonDecode(response.body)['data'];
+      //   final int remainingUnreadNotificationCount =
+      //       jsonData['data']['remaining_unread_notification_count'];
+
+      //   setState(() {
+      //     firebaseNotificationCount = 0;
+      //     unreadNotificationCount = remainingUnreadNotificationCount;
+      //   });
+
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       content: Text(
+      //         'Notification mark as read success',
+      //         style: regularTextStyle,
+      //         textAlign: TextAlign.center,
+      //       ),
+      //     ),
+      //   );
+      // } else {
+      //   if (kDebugMode) {
+      //     print('Error : ${response.statusCode}');
+      //   }
+      // }
     } catch (e) {
       if (kDebugMode) {
         print('Error : $e');
@@ -73,14 +104,49 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
 
   NotificationService notificationService = NotificationService();
 
+  Future<void> _initializeNotificationCounter() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    setState(() {
+      firebaseNotificationCount =
+          sharedPreferences.getInt('counter_notification') ?? 0;
+    });
+  }
+
   void countNotificationFromFirebase() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      notificationService.getDeviceToken().then((value) {
-        if (value.isNotEmpty) {
-          setState(() {
-            firebaseNotificationCount++;
-          });
-        }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+
+      int currentCount = sharedPreferences.getInt('counter_notification') ?? 0;
+
+      if (message.notification != null) {
+        var uuid = Uuid();
+        final id = uuid.v4();
+        final title = message.notification!.title.toString();
+        final body = message.notification!.body.toString();
+        final timestamp = DateTime.now().toIso8601String();
+
+        final notificationPayload = LocalNotificationModel(
+          id: id,
+          title: title,
+          body: body,
+          timestamp: timestamp,
+          isRead: false,
+          isDeleted: false,
+        );
+
+        await sharedPreferences.setInt(
+          'counter_notification',
+          currentCount + 1,
+        );
+        await NotificationDatabase.instance.insertNotification(
+          notificationPayload,
+        );
+      }
+
+      setState(() {
+        firebaseNotificationCount = currentCount + 1;
       });
     });
   }
@@ -88,6 +154,7 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
   @override
   void initState() {
     super.initState();
+    _initializeNotificationCounter();
     countNotificationFromFirebase();
   }
 

@@ -133,10 +133,10 @@ class _LeagueScreenState extends State<LeagueScreen> {
             physics: NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
               childAspectRatio: 1,
-              mainAxisExtent: 95,
+              mainAxisExtent: 90,
             ),
             itemCount: footballLeagues.length,
             itemBuilder: (context, index) {
@@ -218,7 +218,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
                   padding: EdgeInsets.all(6),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      vertical: 14,
+                      vertical: 16,
                       horizontal: 20,
                     ),
                     width: 10,

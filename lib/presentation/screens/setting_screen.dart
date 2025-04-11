@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:football_stadium/data/services/notification_service.dart';
+import 'package:football_stadium/presentation/widgets/shimmers/card_row_shimmer.dart';
 import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -12,15 +14,15 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  final Map<String, bool> _notificationSettings = {
-    'topic_football_stadium': true,
-    'topic_football_league': true,
-    'topic_football_player': true,
-    'topic_football_club': true,
-    'topic_football_match': true,
-    'topic_football_news': true,
-    'topic_football_event': true,
-  };
+  // final Map<String, bool> _notificationSettings = {
+  //   'topic_football_stadium': true,
+  //   'topic_football_league': true,
+  //   'topic_football_player': true,
+  //   'topic_football_club': true,
+  //   'topic_football_match': true,
+  //   'topic_football_news': true,
+  //   'topic_football_event': true,
+  // };
 
   NotificationService notificationService = NotificationService();
 
@@ -44,10 +46,30 @@ class _SettingScreenState extends State<SettingScreen> {
     ).load();
   }
 
+  Map<String, bool> _notificationSettings = {};
+  bool isLoading = true;
+  Future<void> _loadNotificationSettings() async {
+    final prefs = await notificationService.loadPreferences();
+    setState(() {
+      _notificationSettings = prefs;
+      isLoading = false;
+    });
+  }
+
+  Future<void> _toggleNotificationSetting(String topic, bool value) async {
+    setState(() {
+      _notificationSettings[topic] = value;
+    });
+
+    await notificationService.toggleSubscription(topic, value);
+    await notificationService.savePreferences(_notificationSettings);
+  }
+
   @override
   void initState() {
     super.initState();
     loadBannerAd();
+    _loadNotificationSettings();
   }
 
   @override
@@ -91,31 +113,37 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
           child: buildTitle(),
         ),
-        Column(
-          children:
-              _notificationTopics.map((notification) {
-                return SwitchListTile(
-                  splashRadius: 0,
-                  activeColor: whiteColor,
-                  activeTrackColor: primaryColor,
-                  value: _notificationSettings[notification]!,
-                  title: Text(
-                    _getNotificationTitle(notification),
-                    style: regularTextStyle.copyWith(
-                      color: subtitleColor,
-                      fontSize: 14,
-                    ),
-                  ),
-                  onChanged: (value) async {
-                    setState(() {
-                      _notificationSettings[notification] = value;
-                    });
-
-                    notificationService.toggleSubscription(notification, value);
-                  },
-                );
-              }).toList(),
-        ),
+        (_notificationSettings.isEmpty && isLoading)
+            ? Container(
+              padding: const EdgeInsets.only(
+                left: 15,
+                right: 15,
+                top: 0,
+                bottom: 14,
+              ),
+              child: CardRowShimmer(itemCount: 5, height: 60),
+            )
+            : Column(
+              children:
+                  _notificationTopics.map((notification) {
+                    return SwitchListTile(
+                      splashRadius: 0,
+                      activeColor: whiteColor,
+                      activeTrackColor: primaryColor,
+                      value: _notificationSettings[notification]!,
+                      title: Text(
+                        _getNotificationTitle(notification),
+                        style: regularTextStyle.copyWith(
+                          color: subtitleColor,
+                          fontSize: 14,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        _toggleNotificationSetting(notification, value);
+                      },
+                    );
+                  }).toList(),
+            ),
         buildBannerAds(),
       ],
     );

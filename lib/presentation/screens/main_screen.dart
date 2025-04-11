@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app_install_events/app_install_events.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:football_stadium/data/database/notification_database.dart';
 import 'package:football_stadium/data/services/notification_service.dart';
 import 'package:football_stadium/presentation/screens/about_screen.dart';
 import 'package:football_stadium/presentation/screens/home_screen.dart';
@@ -16,6 +17,7 @@ import 'package:football_stadium/utils/scroll_behaviour.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 class MainScreen extends StatefulWidget {
   final int activeIndex;
@@ -50,9 +52,14 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     var responseData = jsonDecode(response.body);
-    prefs.setBool('is_new_device', responseData['data']['is_new_device']);
+    bool isNewDevice = responseData['data']['is_new_device'];
+    prefs.setBool('is_new_device', isNewDevice);
 
-    await notificationService.subscribeToAllTopics();
+    if (isNewDevice) {
+      final prefs = await notificationService.loadPreferences();
+      await notificationService.subscribeToAllTopics();
+      await notificationService.savePreferences(prefs);
+    }
 
     return responseData['data']['status'];
   }
@@ -117,6 +124,17 @@ class _MainScreenState extends State<MainScreen> {
     return isSuccess ? 1 : 0;
   }
 
+  // void resetUserData() async {
+  //   final dbPath = await getDatabasesPath();
+  //   final path = join(dbPath, 'notifications.db');
+  //   await deleteDatabase(path);
+
+  //   NotificationDatabase.instance.deleteAllNotifications();
+  //   SharedPreferences.getInstance().then((prefs) {
+  //     prefs.setInt('counter_notification', 0);
+  //   });
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -131,6 +149,8 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
     sendFirstNotification();
+
+    // resetUserData();
     // detectUninstalledApp();
   }
 

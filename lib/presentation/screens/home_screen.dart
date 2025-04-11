@@ -237,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         child: Image.network(
                                           popularStadium.logoPrimary,
-                                          width: 25,
+                                          width: 22,
                                         ),
                                       ),
                                       const SizedBox(width: 8),
@@ -287,9 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Positioned(
-                      bottom:
-                          MediaQuery.of(context).size.height *
-                          (Platform.isIOS ? .045 : .05),
+                      bottom: MediaQuery.of(context).size.height * .045,
                       right: MediaQuery.of(context).size.height * .015,
                       child: Row(
                         children: List.generate(
@@ -299,8 +297,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             return GestureDetector(
                               onTap: () {},
                               child: AnimatedContainer(
-                                width: 8,
-                                height: 8,
+                                width: 6,
+                                height: 6,
                                 margin: EdgeInsets.symmetric(horizontal: 5),
                                 decoration: BoxDecoration(
                                   color:
@@ -347,10 +345,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   physics: NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
                     childAspectRatio: 1,
-                    mainAxisExtent: 95,
+                    mainAxisExtent: 90,
                   ),
                   itemCount: mainData?.popularLeagues.length,
                   itemBuilder: (context, index) {
@@ -388,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.all(8),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 14,
+                            vertical: 16,
                             horizontal: 20,
                           ),
                           width: 10,
@@ -424,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                     childAspectRatio: 1,
-                    mainAxisExtent: 75,
+                    mainAxisExtent: 70,
                   ),
                   itemCount: mainData?.popularClubs.length,
                   itemBuilder: (context, index) {
@@ -468,7 +466,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding: const EdgeInsets.only(right: 12),
                                   child: Image.network(
                                     popularClub!.logoWhite!,
-                                    width: 25,
+                                    width: 22,
                                   ),
                                 ),
                                 Column(

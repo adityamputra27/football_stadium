@@ -197,7 +197,7 @@ class _ClubScreenState extends State<ClubScreen> {
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
                     childAspectRatio: 1,
-                    mainAxisExtent: 75,
+                    mainAxisExtent: 70,
                   ),
                   itemCount: footballClubs.length,
                   itemBuilder: (context, index) {
@@ -268,7 +268,7 @@ class _ClubScreenState extends State<ClubScreen> {
                                   padding: const EdgeInsets.only(right: 12),
                                   child: Image.network(
                                     footballClub.logoWhite,
-                                    width: 25,
+                                    width: 22,
                                   ),
                                 ),
                                 Column(
@@ -297,7 +297,7 @@ class _ClubScreenState extends State<ClubScreen> {
                               "Capacity: ${footballClub.capacity}",
                               style: mediumTextStyle.copyWith(
                                 color: whiteColor,
-                                fontSize: 12,
+                                fontSize: 10,
                               ),
                             ),
                           ],
