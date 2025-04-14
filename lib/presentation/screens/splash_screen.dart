@@ -36,55 +36,44 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> registerDevice() async {
-    notificationService.requestNotificationPermission();
-    notificationService.firebaseInit(context);
-    notificationService.isTokenRefresh();
+    NotificationService().requestNotificationPermission();
+    NotificationService().firebaseInit(context);
+    NotificationService().isTokenRefresh();
 
     String deviceId = '-';
-    String firebaseCloudMessagingToken =
-        await notificationService.getDeviceToken();
+    String token = await NotificationService().getDeviceToken();
 
-    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
-      deviceId = androidDeviceInfo.id;
-    } else if (Platform.isIOS) {
-      IosDeviceInfo iosDeviceInfo = await deviceInfoPlugin.iosInfo;
-      deviceId = iosDeviceInfo.localizedModel;
-    }
+    if (token.isNotEmpty) {
+      DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidDeviceInfo =
+            await deviceInfoPlugin.androidInfo;
+        deviceId = androidDeviceInfo.id;
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosDeviceInfo = await deviceInfoPlugin.iosInfo;
+        deviceId = iosDeviceInfo.localizedModel;
+      }
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isNewDevice = prefs.getBool('is_new_device') ?? false;
-    if (isNewDevice) {
-      Timer(const Duration(seconds: 2), () {
-        Get.offAll(
-          () => const MainScreen(activeIndex: 0),
-          transition: Transition.rightToLeft,
-        );
-      });
-      return;
-    }
+      final response = await http.post(
+        Uri.parse("${Environment.baseURL}/register-device"),
+        headers: <String, String>{
+          'Football-Stadium-App': Environment.valueHeader,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'device_id': deviceId, 'fcm_token': token}),
+      );
 
-    final response = await http.post(
-      Uri.parse("${Environment.baseURL}/register-device"),
-      headers: <String, String>{
-        'Football-Stadium-App': Environment.valueHeader,
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'device_id': deviceId,
-        'fcm_token': firebaseCloudMessagingToken,
-      }),
-    );
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    dynamic responseData = jsonDecode(response.body);
-    bool responseStatus = responseData['data']['status'];
-    int responseUserId = responseData['data']['data']['id'];
+      dynamic responseData = jsonDecode(response.body);
+      bool responseStatus = responseData['data']['status'];
+      int responseUserId = responseData['data']['data']['id'];
 
-    if (responseStatus) {
-      prefs.setInt('user_id', responseUserId);
-    } else {
-      prefs.setInt('user_id', 0);
+      if (responseStatus) {
+        prefs.setInt('user_id', responseUserId);
+      } else {
+        prefs.setInt('user_id', 0);
+      }
     }
 
     Timer(const Duration(seconds: 2), () {

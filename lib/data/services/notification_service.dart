@@ -86,6 +86,7 @@ class NotificationService {
 
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
+          icon: '@drawable/ic_notification',
           channel.id.toString(),
           channel.name.toString(),
           importance: Importance.high,
