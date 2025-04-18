@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/data/models/main_model.dart';
@@ -152,12 +153,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: NetworkImage(
+                                          image: CachedNetworkImageProvider(
                                             popularStadium!.stadiumFilePath!,
                                           ),
                                         ),
                                       ),
                                     ),
+
                                     Container(
                                       decoration: BoxDecoration(
                                         border: Border(
@@ -273,9 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         options: CarouselOptions(
                           height: 180,
                           enlargeCenterPage: true,
-                          autoPlay: true,
                           aspectRatio: 16 / 9,
-                          autoPlayCurve: Curves.ease,
                           enableInfiniteScroll: true,
                           viewportFraction: 1,
                           onPageChanged: (index, reason) {

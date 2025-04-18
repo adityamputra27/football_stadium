@@ -1,20 +1,15 @@
-// import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/data/database/notification_database.dart';
-import 'package:football_stadium/data/models/local_notification_model.dart';
 import 'package:football_stadium/data/services/notification_service.dart';
 import 'package:football_stadium/presentation/screens/notification_screen.dart';
-// import 'package:football_stadium/utils/environment.dart';
+import 'package:football_stadium/utils/notification_counter.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/route_manager.dart';
-// import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 class HeaderNavigation extends StatefulWidget {
   const HeaderNavigation({super.key});
@@ -104,49 +99,23 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
 
   NotificationService notificationService = NotificationService();
 
-  Future<void> _initializeNotificationCounter() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  // Future<void> _initializeNotificationCounter() async {
+  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    setState(() {
-      firebaseNotificationCount =
-          sharedPreferences.getInt('counter_notification') ?? 0;
-    });
-  }
+  //   setState(() {
+  //     firebaseNotificationCount =
+  //         sharedPreferences.getInt('counter_notification') ?? 0;
+  //   });
+  // }
 
   void countNotificationFromFirebase() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
-
       int currentCount = sharedPreferences.getInt('counter_notification') ?? 0;
 
-      if (message.notification != null) {
-        var uuid = Uuid();
-        final id = uuid.v4();
-        final title = message.notification!.title.toString();
-        final body = message.notification!.body.toString();
-        final timestamp = DateTime.now().toIso8601String();
-
-        final notificationPayload = LocalNotificationModel(
-          id: id,
-          title: title,
-          body: body,
-          timestamp: timestamp,
-          isRead: false,
-          isDeleted: false,
-        );
-
-        await sharedPreferences.setInt(
-          'counter_notification',
-          currentCount + 1,
-        );
-        await NotificationDatabase.instance.insertNotification(
-          notificationPayload,
-        );
-      }
-
       setState(() {
-        firebaseNotificationCount = currentCount + 1;
+        firebaseNotificationCount = currentCount;
       });
     });
   }
@@ -154,8 +123,8 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
   @override
   void initState() {
     super.initState();
-    _initializeNotificationCounter();
-    countNotificationFromFirebase();
+    // _initializeNotificationCounter();
+    // countNotificationFromFirebase();
   }
 
   @override
@@ -213,25 +182,33 @@ class _HeaderNavigationState extends State<HeaderNavigation> {
                             color: whiteColor,
                           ),
                         ),
-                        if (totalUnreadNotification > 0)
-                          Positioned(
-                            right: 6,
-                            top: 3,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                "$totalUnreadNotification",
-                                style: boldTextStyle.copyWith(
-                                  fontSize: 10,
-                                  color: whiteColor,
-                                ),
-                              ),
-                            ),
-                          ),
+                        StreamBuilder<int>(
+                          stream: NotificationCounter().stream,
+                          builder: (context, snapshot) {
+                            final count = snapshot.data ?? 0;
+
+                            return count > 0
+                                ? Positioned(
+                                  right: 6,
+                                  top: 3,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Text(
+                                      count.toString(),
+                                      style: boldTextStyle.copyWith(
+                                        fontSize: 10,
+                                        color: whiteColor,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                : const SizedBox();
+                          },
+                        ),
                       ],
                     ),
                   ],

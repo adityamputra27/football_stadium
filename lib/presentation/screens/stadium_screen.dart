@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -164,7 +165,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                                     ),
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: NetworkImage(
+                                      image: CachedNetworkImageProvider(
                                         footballStadiumFile!.filePath,
                                       ),
                                     ),
@@ -274,9 +275,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
                     options: CarouselOptions(
                       height: 250,
                       enlargeCenterPage: true,
-                      autoPlay: true,
                       aspectRatio: 16 / 9,
-                      autoPlayCurve: Curves.ease,
                       enableInfiniteScroll: true,
                       viewportFraction: 1,
                       onPageChanged: (index, reason) {
@@ -372,7 +371,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
               padding: const EdgeInsets.only(bottom: 16),
               child: Text(
                 'Information',
-                style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
+                style: boldTextStyle.copyWith(color: whiteColor, fontSize: 15),
               ),
             ),
             buildTableRow('Capacity', footballStadium!.capacity),
@@ -396,7 +395,7 @@ class _StadiumScreenState extends State<StadiumScreen> {
               padding: const EdgeInsets.only(bottom: 16, left: 8),
               child: Text(
                 'History',
-                style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
+                style: boldTextStyle.copyWith(color: whiteColor, fontSize: 15),
               ),
             ),
             Html(

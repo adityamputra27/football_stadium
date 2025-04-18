@@ -32,38 +32,6 @@ class _MainScreenState extends State<MainScreen> {
 
   NotificationService notificationService = NotificationService();
 
-  Future<bool> sendFirstNotification() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    int userId = prefs.getInt('user_id')!;
-    String firebaseCloudMessagingToken =
-        await notificationService.getDeviceToken();
-
-    final response = await http.post(
-      Uri.parse("${Environment.baseURL}/first-notification-device"),
-      headers: <String, String>{
-        'Football-Stadium-App': Environment.valueHeader,
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'user_id': userId,
-        'fcm_token': firebaseCloudMessagingToken,
-      }),
-    );
-
-    var responseData = jsonDecode(response.body);
-    bool isNewDevice = responseData['data']['is_new_device'];
-    prefs.setBool('is_new_device', isNewDevice);
-
-    if (isNewDevice) {
-      final prefs = await notificationService.loadPreferences();
-      await notificationService.subscribeToAllTopics();
-      await notificationService.savePreferences(prefs);
-    }
-
-    return responseData['data']['status'];
-  }
-
   void detectUninstalledApp() async {
     AppIUEvents appInstallEvents = AppIUEvents();
     appInstallEvents.startListening();
@@ -140,15 +108,18 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     selectedIndex = widget.activeIndex;
 
-    notificationService.requestNotificationPermission();
-    notificationService.firebaseInit(context);
-    notificationService.isTokenRefresh();
-    notificationService.getDeviceToken().then((value) {
+    notificationService.requestNotificationPermission((isGranted) {
       if (kDebugMode) {
-        print(value);
+        print(isGranted);
       }
     });
-    sendFirstNotification();
+    // notificationService.firebaseInit(context);
+    // notificationService.isTokenRefresh();
+    // notificationService.getDeviceToken().then((value) {
+    //   if (kDebugMode) {
+    //     print(value);
+    //   }
+    // });
 
     // resetUserData();
     // detectUninstalledApp();

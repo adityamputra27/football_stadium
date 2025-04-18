@@ -1,17 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/data/services/notification_service.dart';
 import 'package:football_stadium/presentation/screens/main_screen.dart';
-import 'package:football_stadium/utils/environment.dart';
 import 'package:football_stadium/utils/theme.dart';
 import 'package:get/route_manager.dart';
-import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,60 +29,26 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  Future<void> registerDevice() async {
-    NotificationService().requestNotificationPermission();
+  Future<void> requestPermission() async {
+    NotificationService().requestNotificationPermission((isGranted) {
+      redirectToMainScreen();
+    });
     NotificationService().firebaseInit(context);
     NotificationService().isTokenRefresh();
+  }
 
-    String deviceId = '-';
-    String token = await NotificationService().getDeviceToken();
-
-    if (token.isNotEmpty) {
-      DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-      if (Platform.isAndroid) {
-        AndroidDeviceInfo androidDeviceInfo =
-            await deviceInfoPlugin.androidInfo;
-        deviceId = androidDeviceInfo.id;
-      } else if (Platform.isIOS) {
-        IosDeviceInfo iosDeviceInfo = await deviceInfoPlugin.iosInfo;
-        deviceId = iosDeviceInfo.localizedModel;
-      }
-
-      final response = await http.post(
-        Uri.parse("${Environment.baseURL}/register-device"),
-        headers: <String, String>{
-          'Football-Stadium-App': Environment.valueHeader,
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({'device_id': deviceId, 'fcm_token': token}),
-      );
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      dynamic responseData = jsonDecode(response.body);
-      bool responseStatus = responseData['data']['status'];
-      int responseUserId = responseData['data']['data']['id'];
-
-      if (responseStatus) {
-        prefs.setInt('user_id', responseUserId);
-      } else {
-        prefs.setInt('user_id', 0);
-      }
-    }
-
-    Timer(const Duration(seconds: 2), () {
-      Get.offAll(
-        () => const MainScreen(activeIndex: 0),
-        transition: Transition.rightToLeft,
-      );
-    });
+  void redirectToMainScreen() {
+    Get.offAll(
+      () => const MainScreen(activeIndex: 0),
+      transition: Transition.rightToLeft,
+    );
   }
 
   @override
   void initState() {
     super.initState();
     getPackageInfo();
-    registerDevice();
+    requestPermission();
   }
 
   @override
