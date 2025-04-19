@@ -608,6 +608,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  scrollable_tab_view:
+    dependency: "direct main"
+    description:
+      name: scrollable_tab_view
+      sha256: "62759aa6b415b37a1db05de7055e348eb0bf6ca263b7369b69635af4997cf2db"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.13"
   shared_preferences:
     dependency: "direct main"
     description:

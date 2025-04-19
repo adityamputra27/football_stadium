@@ -400,7 +400,13 @@ class _StadiumScreenState extends State<StadiumScreen> {
             ),
             Html(
               data: text,
-              style: {"*": Style(color: whiteColor, fontFamily: fontFamily)},
+              style: {
+                "*": Style(
+                  color: whiteColor,
+                  fontFamily: fontFamily,
+                  fontSize: FontSize(13),
+                ),
+              },
             ),
           ],
         ),

@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
+  scrollable_tab_view
   url_launcher_windows
 )
 

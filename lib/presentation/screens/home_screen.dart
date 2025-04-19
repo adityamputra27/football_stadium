@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:football_stadium/data/models/main_model.dart';
 import 'package:football_stadium/presentation/screens/club_screen.dart';
+import 'package:football_stadium/presentation/screens/league_screen.dart';
 import 'package:football_stadium/presentation/screens/stadium_screen.dart';
 import 'package:football_stadium/presentation/widgets/shimmers/card_grid_shimmer.dart';
 import 'package:football_stadium/presentation/widgets/shimmers/card_row_shimmer.dart';
@@ -113,212 +114,246 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Widget buildCarousel() {
-      return isLoading
-          ? CarouselShimmer()
-          : ListView(
-            padding: EdgeInsets.only(
-              left: 15,
-              right: 15,
-              top: Platform.isIOS ? 6 : 12,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 24),
+          Container(
+            padding: const EdgeInsets.only(left: 15, right: 15),
+            child: Text(
+              'Popular Stadiums',
+              style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
             ),
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * .25,
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned.fill(
-                      child: CarouselSlider.builder(
-                        itemCount: mainData?.popularStadiums.length,
-                        carouselController: innerCarouselController,
-                        itemBuilder: (
-                          BuildContext context,
-                          int index,
-                          int realIndex,
-                        ) {
-                          MainPopularStadium? popularStadium =
-                              mainData?.popularStadiums[index];
-                          return SizedBox(
-                            child: Stack(
-                              children: [
-                                Stack(
+          ),
+          isLoading
+              ? CarouselShimmer(customMarginTop: 24)
+              : ListView(
+                padding: EdgeInsets.only(left: 15, right: 15),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .25,
+                    width: MediaQuery.of(context).size.width,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Positioned.fill(
+                          child: CarouselSlider.builder(
+                            itemCount: mainData?.popularStadiums.length,
+                            carouselController: innerCarouselController,
+                            itemBuilder: (
+                              BuildContext context,
+                              int index,
+                              int realIndex,
+                            ) {
+                              MainPopularStadium? popularStadium =
+                                  mainData?.popularStadiums[index];
+                              return SizedBox(
+                                child: Stack(
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(14),
-                                        ),
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: CachedNetworkImageProvider(
-                                            popularStadium!.stadiumFilePath!,
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(14),
+                                            ),
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: CachedNetworkImageProvider(
+                                                popularStadium!
+                                                    .stadiumFilePath!,
+                                              ),
+                                            ),
                                           ),
                                         ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: primaryColor,
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(14),
+                                            ),
+                                            gradient: LinearGradient(
+                                              begin: FractionalOffset.topCenter,
+                                              end:
+                                                  FractionalOffset.bottomCenter,
+                                              colors: [
+                                                Colors.transparent,
+                                                backgroundColor,
+                                              ],
+                                              stops: [0.0, 0.85],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                        left: 16,
+                                        right: 12,
+                                        top: 10,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: primaryColor,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(8),
+                                              ),
+                                            ),
+                                            padding: const EdgeInsets.only(
+                                              top: 4,
+                                              bottom: 6,
+                                              right: 8,
+                                              left: 8,
+                                            ),
+                                            child: Text(
+                                              'Capacity: ${popularStadium.capacity}',
+                                              style: mediumTextStyle.copyWith(
+                                                color: whiteColor,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                          ),
+                                          // Text(
+                                          //   "Capacity : ${popularStadium.capacity}",
+                                          //   style: mediumTextStyle.copyWith(
+                                          //     fontSize: 12,
+                                          //     color: whiteColor,
+                                          //   ),
+                                          // ),
+
+                                          // isRenovations[index]
+                                          //     ? Container(
+                                          //       decoration: BoxDecoration(
+                                          //         color: primaryColor,
+                                          //         borderRadius: BorderRadius.all(
+                                          //           Radius.circular(8),
+                                          //         ),
+                                          //       ),
+                                          //       padding: const EdgeInsets.only(
+                                          //         top: 4,
+                                          //         bottom: 6,
+                                          //         right: 8,
+                                          //         left: 8,
+                                          //       ),
+                                          //       child: Text(
+                                          //         'Renovation'.toUpperCase(),
+                                          //         style: boldTextStyle.copyWith(
+                                          //           color: whiteColor,
+                                          //           fontSize: 10,
+                                          //         ),
+                                          //       ),
+                                          //     )
+                                          //     : const SizedBox(),
+                                        ],
                                       ),
                                     ),
-
                                     Container(
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: primaryColor,
-                                            width: 1.5,
+                                      padding: const EdgeInsets.all(16),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                              bottom: 2,
+                                            ),
+                                            child: Image.network(
+                                              popularStadium.logoPrimary,
+                                              width: 22,
+                                            ),
                                           ),
-                                        ),
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(14),
-                                        ),
-                                        gradient: LinearGradient(
-                                          begin: FractionalOffset.topCenter,
-                                          end: FractionalOffset.bottomCenter,
-                                          colors: [
-                                            Colors.transparent,
-                                            backgroundColor,
-                                          ],
-                                          stops: [0.0, 0.85],
-                                        ),
+                                          const SizedBox(width: 8),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                popularStadium.clubName,
+                                                style: semiBoldTextStyle
+                                                    .copyWith(
+                                                      color: whiteColor,
+                                                      fontSize: 14,
+                                                    ),
+                                              ),
+                                              Text(
+                                                popularStadium.stadiumName!,
+                                                style: mediumTextStyle.copyWith(
+                                                  color: whiteColor,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    left: 16,
-                                    right: 12,
-                                    top: 10,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Capacity : ${popularStadium.capacity}",
-                                        style: mediumTextStyle.copyWith(
-                                          fontSize: 12,
-                                          color: whiteColor,
-                                        ),
-                                      ),
-                                      // isRenovations[index]
-                                      //     ? Container(
-                                      //       decoration: BoxDecoration(
-                                      //         color: primaryColor,
-                                      //         borderRadius: BorderRadius.all(
-                                      //           Radius.circular(8),
-                                      //         ),
-                                      //       ),
-                                      //       padding: const EdgeInsets.only(
-                                      //         top: 4,
-                                      //         bottom: 6,
-                                      //         right: 8,
-                                      //         left: 8,
-                                      //       ),
-                                      //       child: Text(
-                                      //         'Renovation'.toUpperCase(),
-                                      //         style: boldTextStyle.copyWith(
-                                      //           color: whiteColor,
-                                      //           fontSize: 10,
-                                      //         ),
-                                      //       ),
-                                      //     )
-                                      //     : const SizedBox(),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.only(
-                                          bottom: 2,
-                                        ),
-                                        child: Image.network(
-                                          popularStadium.logoPrimary,
-                                          width: 22,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            popularStadium.clubName,
-                                            style: semiBoldTextStyle.copyWith(
-                                              color: whiteColor,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Text(
-                                            popularStadium.stadiumName!,
-                                            style: mediumTextStyle.copyWith(
-                                              color: whiteColor,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                              );
+                            },
+                            options: CarouselOptions(
+                              height: 180,
+                              enlargeCenterPage: true,
+                              aspectRatio: 16 / 9,
+                              enableInfiniteScroll: true,
+                              viewportFraction: 1,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  innerSliderIndex = index;
+                                });
+                              },
                             ),
-                          );
-                        },
-                        options: CarouselOptions(
-                          height: 180,
-                          enlargeCenterPage: true,
-                          aspectRatio: 16 / 9,
-                          enableInfiniteScroll: true,
-                          viewportFraction: 1,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              innerSliderIndex = index;
-                            });
-                          },
+                          ),
                         ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: MediaQuery.of(context).size.height * .045,
-                      right: MediaQuery.of(context).size.height * .015,
-                      child: Row(
-                        children: List.generate(
-                          mainData!.popularStadiums.length,
-                          (index) {
-                            bool isSelected = innerSliderIndex == index;
-                            return GestureDetector(
-                              onTap: () {},
-                              child: AnimatedContainer(
-                                width: 6,
-                                height: 6,
-                                margin: EdgeInsets.symmetric(horizontal: 5),
-                                decoration: BoxDecoration(
-                                  color:
-                                      isSelected
-                                          ? dotIndicatorActiveColor
-                                          : dotIndicatorDefaultColor,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                duration: const Duration(milliseconds: 300),
-                              ),
-                            );
-                          },
+                        Positioned(
+                          bottom: MediaQuery.of(context).size.height * .045,
+                          right: MediaQuery.of(context).size.height * .015,
+                          child: Row(
+                            children: List.generate(
+                              mainData!.popularStadiums.length,
+                              (index) {
+                                bool isSelected = innerSliderIndex == index;
+                                return GestureDetector(
+                                  onTap: () {},
+                                  child: AnimatedContainer(
+                                    width: 6,
+                                    height: 6,
+                                    margin: EdgeInsets.symmetric(horizontal: 5),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          isSelected
+                                              ? dotIndicatorActiveColor
+                                              : dotIndicatorDefaultColor,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    duration: const Duration(milliseconds: 300),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          );
+        ],
+      );
     }
 
     Widget buildPopularLeague() {
@@ -332,11 +367,38 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Popular League',
-              style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Top Leagues',
+                  style: boldTextStyle.copyWith(
+                    color: whiteColor,
+                    fontSize: 16,
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.offAll(
+                          () => const LeagueScreen(),
+                          transition: Transition.rightToLeft,
+                        );
+                      },
+                      child: Text(
+                        'Show All',
+                        style: regularTextStyle.copyWith(
+                          color: primaryColor,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-
             isLoading
                 ? CardGridShimmer()
                 : GridView.builder(
@@ -407,9 +469,37 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Popular Stadium',
-              style: boldTextStyle.copyWith(color: whiteColor, fontSize: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Top Clubs',
+                  style: boldTextStyle.copyWith(
+                    color: whiteColor,
+                    fontSize: 16,
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.offAll(
+                          () => const LeagueScreen(),
+                          transition: Transition.rightToLeft,
+                        );
+                      },
+                      child: Text(
+                        'Show All',
+                        style: regularTextStyle.copyWith(
+                          color: primaryColor,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
             isLoading
                 ? CardRowShimmer()
