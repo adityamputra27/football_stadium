@@ -143,37 +143,47 @@ class _LeagueScreenState extends State<LeagueScreen> {
               FootballLeagueModel footballLeague = footballLeagues[index];
               return GestureDetector(
                 onTap: () {
-                  if (!isInterstitialAdLoaded) {
-                    if (_interstitialAd != null) {
-                      _interstitialAd!.show();
-                      setState(() {
-                        isInterstitialAdLoaded = true;
-                      });
-                    } else {
-                      setState(() {
-                        isInterstitialAdLoaded = true;
-                      });
-                      Get.to(
-                        () => ClubScreen(
-                          footballLeagueId: footballLeague.id,
-                          footballLeagueLogo: footballLeague.logoWhite,
-                          footballLeagueName: footballLeague.name,
-                          footballClubTotal: footballLeague.clubTotal,
-                        ),
-                        transition: Transition.rightToLeft,
-                      );
-                    }
-                  } else {
-                    Get.to(
-                      () => ClubScreen(
-                        footballLeagueId: footballLeague.id,
-                        footballLeagueLogo: footballLeague.logoWhite,
-                        footballLeagueName: footballLeague.name,
-                        footballClubTotal: footballLeague.clubTotal,
-                      ),
-                      transition: Transition.rightToLeft,
-                    );
-                  }
+                  // if (!isInterstitialAdLoaded) {
+                  //   if (_interstitialAd != null) {
+                  //     _interstitialAd!.show();
+                  //     setState(() {
+                  //       isInterstitialAdLoaded = true;
+                  //     });
+                  //   } else {
+                  //     setState(() {
+                  //       isInterstitialAdLoaded = true;
+                  //     });
+                  //     Get.to(
+                  //       () => ClubScreen(
+                  //         footballLeagueId: footballLeague.id,
+                  //         footballLeagueLogo: footballLeague.logoWhite,
+                  //         footballLeagueName: footballLeague.name,
+                  //         footballClubTotal: footballLeague.clubTotal,
+                  //       ),
+                  //       transition: Transition.rightToLeft,
+                  //     );
+                  //   }
+                  // } else {
+                  //   Get.to(
+                  //     () => ClubScreen(
+                  //       footballLeagueId: footballLeague.id,
+                  //       footballLeagueLogo: footballLeague.logoWhite,
+                  //       footballLeagueName: footballLeague.name,
+                  //       footballClubTotal: footballLeague.clubTotal,
+                  //     ),
+                  //     transition: Transition.rightToLeft,
+                  //   );
+                  // }
+
+                  Get.to(
+                    () => ClubScreen(
+                      footballLeagueId: footballLeague.id,
+                      footballLeagueLogo: footballLeague.logoWhite,
+                      footballLeagueName: footballLeague.name,
+                      footballClubTotal: footballLeague.clubTotal,
+                    ),
+                    transition: Transition.rightToLeft,
+                  );
 
                   setState(() {
                     selectedFootballLeague = footballLeague;
