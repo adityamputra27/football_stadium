@@ -19,7 +19,14 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int selectedIndex;
+  final Function(int index) onItemTapped;
+
+  const HomeScreen({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemTapped,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -382,10 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Get.offAll(
-                          () => const LeagueScreen(),
-                          transition: Transition.rightToLeft,
-                        );
+                        widget.onItemTapped(1);
                       },
                       child: Text(
                         'Show All',
@@ -484,10 +488,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Get.offAll(
-                          () => const LeagueScreen(),
-                          transition: Transition.rightToLeft,
-                        );
+                        widget.onItemTapped(1);
                       },
                       child: Text(
                         'Show All',
