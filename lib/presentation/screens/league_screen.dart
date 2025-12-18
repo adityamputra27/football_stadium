@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:football_stadium/data/models/football_league_model.dart';
 import 'package:football_stadium/presentation/screens/club_screen.dart';
+import 'package:football_stadium/presentation/screens/standing_screen.dart';
 import 'package:football_stadium/presentation/widgets/shimmers/card_grid_shimmer.dart';
 import 'package:football_stadium/utils/ad_helper.dart';
 import 'package:football_stadium/utils/environment.dart';
@@ -78,7 +80,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
               Get.to(
-                () => ClubScreen(
+                () => StandingScreen(
                   footballLeagueId: selectedFootballLeague!.id,
                   footballLeagueLogo: selectedFootballLeague!.logoWhite,
                   footballLeagueName: selectedFootballLeague!.name,
@@ -143,52 +145,275 @@ class _LeagueScreenState extends State<LeagueScreen> {
               FootballLeagueModel footballLeague = footballLeagues[index];
               return GestureDetector(
                 onTap: () {
-                  // if (!isInterstitialAdLoaded) {
-                  //   if (_interstitialAd != null) {
-                  //     _interstitialAd!.show();
-                  //     setState(() {
-                  //       isInterstitialAdLoaded = true;
-                  //     });
-                  //   } else {
-                  //     setState(() {
-                  //       isInterstitialAdLoaded = true;
-                  //     });
-                  //     Get.to(
-                  //       () => ClubScreen(
-                  //         footballLeagueId: footballLeague.id,
-                  //         footballLeagueLogo: footballLeague.logoWhite,
-                  //         footballLeagueName: footballLeague.name,
-                  //         footballClubTotal: footballLeague.clubTotal,
-                  //       ),
-                  //       transition: Transition.rightToLeft,
-                  //     );
-                  //   }
-                  // } else {
-                  //   Get.to(
-                  //     () => ClubScreen(
-                  //       footballLeagueId: footballLeague.id,
-                  //       footballLeagueLogo: footballLeague.logoWhite,
-                  //       footballLeagueName: footballLeague.name,
-                  //       footballClubTotal: footballLeague.clubTotal,
-                  //     ),
-                  //     transition: Transition.rightToLeft,
-                  //   );
-                  // }
-
-                  Get.to(
-                    () => ClubScreen(
-                      footballLeagueId: footballLeague.id,
-                      footballLeagueLogo: footballLeague.logoWhite,
-                      footballLeagueName: footballLeague.name,
-                      footballClubTotal: footballLeague.clubTotal,
-                    ),
-                    transition: Transition.rightToLeft,
-                  );
+                  // Get.to(
+                  //   () => ClubScreen(
+                  //     footballLeagueId: footballLeague.id,
+                  //     footballLeagueLogo: footballLeague.logoWhite,
+                  //     footballLeagueName: footballLeague.name,
+                  //     footballClubTotal: footballLeague.clubTotal,
+                  //   ),
+                  //   transition: Transition.rightToLeft,
+                  // );
 
                   setState(() {
                     selectedFootballLeague = footballLeague;
                     selectedLeague = index;
                   });
+
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: adjustColor(backgroundColor),
+                        content: Container(
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.9,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (selectedFootballLeague != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Row(
+                                      children: [
+                                        Image.network(
+                                          selectedFootballLeague!.logoWhite,
+                                          width: 25,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          selectedFootballLeague!.name,
+                                          style: boldTextStyle.copyWith(
+                                            color: whiteColor,
+                                            fontSize: 14,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 24,
+                                    bottom: 24,
+                                  ),
+                                  child: Text(
+                                    'Active Season : 2024/2025',
+                                    style: semiBoldTextStyle.copyWith(
+                                      color: whiteColor,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: primaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Get.to(
+                                            () => ClubScreen(
+                                              footballLeagueId:
+                                                  footballLeague.id,
+                                              footballLeagueLogo:
+                                                  footballLeague.logoWhite,
+                                              footballLeagueName:
+                                                  footballLeague.name,
+                                              footballClubTotal:
+                                                  footballLeague.clubTotal,
+                                            ),
+                                            transition: Transition.rightToLeft,
+                                          );
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.sports_soccer,
+                                              color: whiteColor,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'Football Clubs',
+                                              style: boldTextStyle.copyWith(
+                                                color: whiteColor,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: primaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          if (!isInterstitialAdLoaded) {
+                                            if (_interstitialAd != null) {
+                                              _interstitialAd!.show();
+                                              setState(() {
+                                                isInterstitialAdLoaded = true;
+                                              });
+                                            } else {
+                                              setState(() {
+                                                isInterstitialAdLoaded = true;
+                                              });
+                                              Get.to(
+                                                () => StandingScreen(
+                                                  footballLeagueId:
+                                                      footballLeague.id,
+                                                  footballLeagueLogo:
+                                                      footballLeague.logoWhite,
+                                                  footballLeagueName:
+                                                      footballLeague.name,
+                                                  footballClubTotal:
+                                                      footballLeague.clubTotal,
+                                                ),
+                                                transition:
+                                                    Transition.rightToLeft,
+                                              );
+                                            }
+                                          } else {
+                                            Get.to(
+                                              () => StandingScreen(
+                                                footballLeagueId:
+                                                    footballLeague.id,
+                                                footballLeagueLogo:
+                                                    footballLeague.logoWhite,
+                                                footballLeagueName:
+                                                    footballLeague.name,
+                                                footballClubTotal:
+                                                    footballLeague.clubTotal,
+                                              ),
+                                              transition:
+                                                  Transition.rightToLeft,
+                                            );
+                                          }
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.leaderboard,
+                                              color: whiteColor,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'Football Standings',
+                                              style: boldTextStyle.copyWith(
+                                                color: whiteColor,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: primaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          // Navigasi ke MatchesScreen
+                                          // Get.to(
+                                          //   () => MatchesScreen(),
+                                          //   transition: Transition.rightToLeft,
+                                          // );
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.event,
+                                              color: whiteColor,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'Football Matches',
+                                              style: boldTextStyle.copyWith(
+                                                color: whiteColor,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: SizedBox(
+                                        width: 120,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            'Close',
+                                            style: boldTextStyle.copyWith(
+                                              color: whiteColor,
+                                              fontSize: 12,
+                                            ),
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 },
                 child: Container(
                   decoration: BoxDecoration(

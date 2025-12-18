@@ -119,7 +119,7 @@ class NotificationService {
           channel.name.toString(),
           importance: Importance.high,
           priority: Priority.high,
-          playSound: false,
+          playSound: true,
           ticker: 'ticker',
           color: const Color(0xff0A141B),
           colorized: true,
